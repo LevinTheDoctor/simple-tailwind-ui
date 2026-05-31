@@ -61,6 +61,7 @@ const S = {
     dflt:     "Standard",
     desc:     "Beschreibung",
     sections: {
+      install:       { title: "Installation",  desc: "Paket installieren und in wenigen Schritten einrichten." },
       card:          { title: "Card",          desc: "Container mit verschiedenen visuellen Stilen und Größen." },
       button:        { title: "Button",        desc: "Interaktiver Button mit Farben, Varianten, Icons und Loading-State." },
       input:         { title: "Input",         desc: "Textfeld mit Icon, Loading-State und TitelBorder-Wrapper." },
@@ -138,6 +139,7 @@ const S = {
     dflt:     "Default",
     desc:     "Description",
     sections: {
+      install:       { title: "Installation",  desc: "Install the package and get started in a few steps." },
       card:          { title: "Card",          desc: "Container with various visual styles and sizes." },
       button:        { title: "Button",        desc: "Interactive button with colors, variants, icons and loading state." },
       input:         { title: "Input",         desc: "Text field with icon, loading state and TitelBorder wrapper." },
@@ -487,6 +489,7 @@ const LANG_OPTIONS = [
 ];
 
 const NAV_KEYS = [
+  "install",
   "card", "button", "input", "dropdown", "combobox", "datepicker",
   "titelborder", "navigationbar", "accordion", "tabelle",
   "modal", "toast", "tabs", "badge",
@@ -495,6 +498,7 @@ const NAV_KEYS = [
 type NavKey = typeof NAV_KEYS[number];
 
 const IMPORT_STRINGS: Record<NavKey, string> = {
+  install:       'npm install @levin-the-doctor/simple-tailwind-ui',
   card:          'import { Card } from "./Components/Card"',
   button:        'import { Button } from "./Components/Button"',
   input:         'import { Input } from "./Components/Input"',
@@ -888,6 +892,40 @@ export function Doku() {
 
           {/* ── Content ──────────────────────────────────────────────────── */}
           <main className="flex-1 px-10 py-8 max-w-3xl flex flex-col gap-0">
+
+            {/* Install */}
+            <Section id="install" title={s.sections.install.title} description={s.sections.install.desc} importStr={IMPORT_STRINGS.install}>
+              <div className="flex flex-col gap-6">
+                <div>
+                  <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
+                    {lang === "de" ? "1. Paket installieren" : "1. Install the package"}
+                  </p>
+                  <CodeBlock code="npm install @levin-the-doctor/simple-tailwind-ui" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
+                    {lang === "de" ? "2. Peer-Dependencies" : "2. Peer dependencies"}
+                  </p>
+                  <CodeBlock code="npm install react react-dom lucide-react tailwindcss" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
+                    {lang === "de" ? "3. Tailwind CSS einbinden (CSS-Datei)" : "3. Import Tailwind CSS (in your CSS file)"}
+                  </p>
+                  <CodeBlock code={`@import "tailwindcss";`} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
+                    {lang === "de" ? "4. Komponente importieren & verwenden" : "4. Import & use a component"}
+                  </p>
+                  <CodeBlock code={`import { Button } from "@levin-the-doctor/simple-tailwind-ui"
+
+export default function App() {
+  return <Button color="primary">Hello World</Button>
+}`} />
+                </div>
+              </div>
+            </Section>
 
             {/* Card */}
             <Section id="card" title={s.sections.card.title} description={s.sections.card.desc} importStr={IMPORT_STRINGS.card}>

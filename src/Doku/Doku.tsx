@@ -15,7 +15,7 @@ import {
 import { Accordion } from "../Components/Accordion";
 import { Tabelle, type TabelleColumn } from "../Components/Tabelle";
 import { Modal } from "../Components/Modal";
-import { Toast, ToastProvider, useToast, type ToastOptions } from "../Components/Toast";
+import { ToastProvider, useToast } from "../Components/Toast";
 import { Tabs, TabPanel } from "../Components/Tabs";
 import { Badge } from "../Components/Badge";
 import {

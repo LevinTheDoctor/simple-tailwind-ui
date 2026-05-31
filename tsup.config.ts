@@ -1,0 +1,15 @@
+import { defineConfig } from "tsup";
+
+export default defineConfig({
+  entry:       ["src/index.ts"],
+  format:      ["esm", "cjs"],
+  dts:         false,
+  sourcemap:   true,
+  clean:       true,
+  outDir:      "lib",
+  external:    ["react", "react-dom", "lucide-react"],
+  treeshake:   true,
+  esbuildOptions(opts) {
+    opts.jsx = "automatic";
+  },
+});

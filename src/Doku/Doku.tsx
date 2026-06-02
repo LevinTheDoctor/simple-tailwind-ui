@@ -868,11 +868,11 @@ export function Doku() {
             <a
               href="/simple-tailwind-ui.md"
               download="simple-tailwind-ui.md"
-              className="flex items-center justify-center w-8 h-8 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-150"
-              aria-label="Download Claude Skill"
-              title="Download Claude Skill"
+              className="flex items-center gap-1.5 px-2.5 h-8 rounded-lg text-xs font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition-colors duration-150"
+              title={lang === "de" ? "Claude-Skill für diese Bibliothek herunterladen" : "Download Claude skill for this library"}
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5 shrink-0" />
+              <span>Claude Skill</span>
             </a>
             {/* GitHub link */}
             <a

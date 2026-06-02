@@ -542,12 +542,11 @@ export function Builder({ lang }: { lang: Lang }) {
                       placeholder="z.B. Star"
                       className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
-                    {selected.props[field.name] && (() => {
-                      const IC = getIcon(selected.props[field.name] as string);
-                      return IC
-                        ? <IC className="w-3 h-3 text-indigo-500 absolute right-2 top-1/2 -translate-y-1/2" />
-                        : <span className="text-[10px] text-red-400 absolute right-2 top-1/2 -translate-y-1/2">?</span>;
-                    })()}
+                    {(selected.props[field.name] as string) ? (
+                      getIcon(selected.props[field.name] as string)
+                        ? <>{(() => { const IC = getIcon(selected.props[field.name] as string)!; return <IC className="w-3 h-3 text-indigo-500 absolute right-2 top-1/2 -translate-y-1/2" />; })()}</>
+                        : <span className="text-[10px] text-red-400 absolute right-2 top-1/2 -translate-y-1/2">?</span>
+                    ) : null}
                   </div>
                   <a
                     href="https://lucide.dev/icons/"

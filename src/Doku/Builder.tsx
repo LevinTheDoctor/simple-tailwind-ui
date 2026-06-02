@@ -51,8 +51,12 @@ const DEFS: ComponentDef[] = [
       { kind: "select", name: "size",  label: "Size",  options: ["text-4xl","text-3xl","text-2xl","text-xl","text-lg"], default: "text-2xl" },
     ],
     render: p => {
-      const Tag = p.level as keyof JSX.IntrinsicElements;
-      return <Tag className={`${p.size as string} font-bold text-zinc-900 dark:text-zinc-100`}>{p.text as string}</Tag>;
+      const cls = `${p.size as string} font-bold text-zinc-900 dark:text-zinc-100`;
+      const text = p.text as string;
+      if (p.level === "h1") return <h1 className={cls}>{text}</h1>;
+      if (p.level === "h3") return <h3 className={cls}>{text}</h3>;
+      if (p.level === "h4") return <h4 className={cls}>{text}</h4>;
+      return <h2 className={cls}>{text}</h2>;
     },
     code: p => `<${p.level} className="${p.size} font-bold">${p.text}</${p.level}>`,
   },
@@ -538,11 +542,12 @@ export function Builder({ lang }: { lang: Lang }) {
                       placeholder="z.B. Star"
                       className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
-                    {selected.props[field.name] && (
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2">
-                        {(() => { const IC = getIcon(selected.props[field.name] as string); return IC ? <IC className="w-3 h-3 text-indigo-500" /> : <span className="text-[10px] text-red-400">?</span>; })()}
-                      </span>
-                    )}
+                    {selected.props[field.name] && (() => {
+                      const IC = getIcon(selected.props[field.name] as string);
+                      return IC
+                        ? <IC className="w-3 h-3 text-indigo-500 absolute right-2 top-1/2 -translate-y-1/2" />
+                        : <span className="text-[10px] text-red-400 absolute right-2 top-1/2 -translate-y-1/2">?</span>;
+                    })()}
                   </div>
                   <a
                     href="https://lucide.dev/icons/"

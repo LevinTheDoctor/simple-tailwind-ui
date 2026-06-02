@@ -22,7 +22,7 @@ import { Changelog } from "../Components/Changelog";
 import {
   Search, Mail, Globe, Trash2, Plus, Save, User, Copy, Check,
   Home, LayoutDashboard, BarChart3, Settings, Bell, MoreHorizontal,
-  Tag, Star, AlertCircle, ShieldCheck, Zap,
+  Tag, Star, AlertCircle, ShieldCheck, Zap, Download,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -807,6 +807,7 @@ export function Doku() {
   const [dark, setDark] = useState(false);
   const [lang, setLang] = useState<Lang>("de");
   const [active, setActive] = useState<NavKey>("install");
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   useEffect(() => {
     if (dark) {
@@ -863,6 +864,16 @@ export function Doku() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Claude skill download */}
+            <a
+              href="/simple-tailwind-ui.md"
+              download="simple-tailwind-ui.md"
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-150"
+              aria-label="Download Claude Skill"
+              title="Download Claude Skill"
+            >
+              <Download className="w-4 h-4" />
+            </a>
             {/* GitHub link */}
             <a
               href="https://github.com/LevinTheDoctor/simple-tailwind-ui"
@@ -1802,9 +1813,99 @@ show("Dauerhaft", { duration: 0 });   // bleibt bis manuell geschlossen`}
               {pt(CHANGELOG_PROPS)}
             </Section>
 
+            {/* Footer */}
+            <footer className="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+              <span className="text-xs text-zinc-400 dark:text-zinc-500">
+                © {new Date().getFullYear()} SimpleTailwindUI — Levin Rüßmann
+              </span>
+              <button
+                onClick={() => setShowPrivacy(true)}
+                className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer underline underline-offset-2"
+              >
+                {lang === "de" ? "Datenschutzerklärung" : "Privacy Policy"}
+              </button>
+            </footer>
+
           </main>
         </div>
       </div>
+
+      {/* Privacy Modal */}
+      <Modal
+        open={showPrivacy}
+        onClose={() => setShowPrivacy(false)}
+        title={lang === "de" ? "Datenschutzerklärung" : "Privacy Policy"}
+        size="lg"
+      >
+        <div className="text-sm text-zinc-600 dark:text-zinc-400 flex flex-col gap-4 max-h-[60vh] overflow-y-auto pr-1">
+          {lang === "de" ? (
+            <>
+              <p>Diese Dokumentationsseite wird über <strong className="text-zinc-800 dark:text-zinc-200">Cloudflare Pages</strong> gehostet. Beim Aufruf der Seite werden technische Daten durch Cloudflare verarbeitet.</p>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Verantwortlicher</p>
+                <p>Levin Rüßmann · levin13c@gmail.com</p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Cloudflare (Hosting &amp; CDN)</p>
+                <p>Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA, verarbeitet beim Besuch dieser Seite automatisch folgende Daten zur Auslieferung der Inhalte und zum Schutz vor Missbrauch:</p>
+                <ul className="list-disc pl-5 mt-1.5 space-y-0.5">
+                  <li><strong className="text-zinc-700 dark:text-zinc-300">IP-Adresse</strong> des anfragenden Geräts</li>
+                  <li>Browsertyp, Betriebssystem, Referrer-URL</li>
+                  <li>Datum, Uhrzeit und aufgerufene URL</li>
+                </ul>
+                <p className="mt-1.5">Diese Daten werden von Cloudflare für Routing, DDoS-Schutz und Performance-Optimierung verarbeitet. Cloudflare kann dabei <strong className="text-zinc-700 dark:text-zinc-300">Cloudflare Workers</strong> einsetzen, um Anfragen serverseitig zu verarbeiten.</p>
+                <p className="mt-1.5">Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren und performanten Bereitstellung der Website). Eine Weitergabe dieser Daten an uns erfolgt nicht.</p>
+                <p className="mt-1.5">Datenschutzerklärung von Cloudflare: <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 underline">cloudflare.com/privacypolicy</a></p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Cookies &amp; Tracking</p>
+                <p>Diese Seite setzt selbst keine Cookies und verwendet kein Tracking oder Analyse-Tools. Cloudflare kann technisch notwendige Cookies setzen (z. B. für Bot-Erkennung).</p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Ihre Rechte</p>
+                <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung sowie Einschränkung der Verarbeitung Ihrer personenbezogenen Daten. Anfragen richten Sie bitte an levin13c@gmail.com.</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p>This documentation site is hosted via <strong className="text-zinc-800 dark:text-zinc-200">Cloudflare Pages</strong>. When you visit the site, technical data is processed by Cloudflare.</p>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Controller</p>
+                <p>Levin Rüßmann · levin13c@gmail.com</p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Cloudflare (Hosting &amp; CDN)</p>
+                <p>Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA, automatically processes the following data when you visit this site to serve content and protect against abuse:</p>
+                <ul className="list-disc pl-5 mt-1.5 space-y-0.5">
+                  <li><strong className="text-zinc-700 dark:text-zinc-300">IP address</strong> of the requesting device</li>
+                  <li>Browser type, operating system, referrer URL</li>
+                  <li>Date, time and requested URL</li>
+                </ul>
+                <p className="mt-1.5">This data is processed by Cloudflare for routing, DDoS protection and performance optimisation. Cloudflare may use <strong className="text-zinc-700 dark:text-zinc-300">Cloudflare Workers</strong> to process requests server-side.</p>
+                <p className="mt-1.5">Legal basis: Art. 6(1)(f) GDPR (legitimate interest in providing a secure and performant website). This data is not shared with us.</p>
+                <p className="mt-1.5">Cloudflare Privacy Policy: <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 underline">cloudflare.com/privacypolicy</a></p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Cookies &amp; Tracking</p>
+                <p>This site does not set any cookies itself and uses no tracking or analytics tools. Cloudflare may set technically necessary cookies (e.g. for bot detection).</p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Your rights</p>
+                <p>You have the right to access, rectify, erase and restrict the processing of your personal data. Please direct requests to levin13c@gmail.com.</p>
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+
     </div>
     </ToastProvider>
   );

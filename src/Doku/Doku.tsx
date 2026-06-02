@@ -834,9 +834,7 @@ export function Doku() {
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <header className="sticky top-0 z-20 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-6 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-sm">
-              <span className="text-white text-xs font-bold leading-none">ST</span>
-            </div>
+            <img src="/SimpleTailwindUILogo.svg" alt="SimpleTailwindUI Logo" className="w-8 h-8 shrink-0" />
             <div className="flex flex-col leading-tight">
               <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100">{s.uiTitle}</span>
               <span className="text-xs text-zinc-400 dark:text-zinc-500">{s.uiSub}</span>

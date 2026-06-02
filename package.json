@@ -5,36 +5,39 @@
   "author": "Levin Rüßmann",
   "license": "MIT",
   "type": "module",
-  "main":    "./lib/index.cjs",
-  "module":  "./lib/index.js",
-  "types":   "./lib/index.d.ts",
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
-      "types":   "./lib/index.d.ts",
-      "import":  "./lib/index.js",
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
       "require": "./lib/index.cjs"
     }
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "sideEffects": false,
   "scripts": {
-    "dev":            "vite",
-    "build":          "tsc -b && vite build",
-    "build:lib":      "tsup && tsc --project tsconfig.lib.json",
-    "lint":           "eslint .",
-    "preview":        "vite preview",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:lib": "tsup && tsc --project tsconfig.lib.json",
+    "lint": "eslint .",
+    "preview": "vite preview",
     "prepublishOnly": "npm run build:lib"
   },
   "peerDependencies": {
     "lucide-react": ">=0.400.0",
-    "react":        ">=18.0.0",
-    "react-dom":    ">=18.0.0",
-    "tailwindcss":  ">=4.0.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "react-markdown": ">=9.0.0",
+    "tailwindcss": ">=4.0.0"
   },
   "dependencies": {
-    "lucide-react": "^1.3.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "lucide-react": ">=0.400.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -47,6 +50,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "react-markdown": "^10.1.0",
     "tailwindcss": "^4.3.0",
     "tsup": "^8.5.1",
     "typescript": "~6.0.2",
@@ -55,8 +59,15 @@
   },
   "repository": {
     "type": "git",
-    "url":  "https://github.com/LevinTheDoctor/simple-tailwind-ui.git"
+    "url": "https://github.com/LevinTheDoctor/simple-tailwind-ui.git"
   },
   "homepage": "https://github.com/LevinTheDoctor/simple-tailwind-ui#readme",
-  "keywords": ["react", "tailwindcss", "component-library", "typescript", "dark-mode", "ui"]
+  "keywords": [
+    "react",
+    "tailwindcss",
+    "component-library",
+    "typescript",
+    "dark-mode",
+    "ui"
+  ]
 }

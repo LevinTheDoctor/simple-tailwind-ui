@@ -18,6 +18,7 @@ import { Modal } from "../Components/Modal";
 import { ToastProvider, useToast } from "../Components/Toast";
 import { Tabs, TabPanel } from "../Components/Tabs";
 import { Badge } from "../Components/Badge";
+import { Changelog } from "../Components/Changelog";
 import {
   Search, Mail, Globe, Trash2, Plus, Save, User, Copy, Check,
   Home, LayoutDashboard, BarChart3, Settings, Bell, MoreHorizontal,
@@ -76,6 +77,7 @@ const S = {
       toast:         { title: "Toast",         desc: "Benachrichtigungssystem mit Provider, Hook und automatischem Ausblenden." },
       tabs:          { title: "Tabs",          desc: "Tab-Navigation mit aktivem Indigo-Indikator — horizontal oder vertikal." },
       badge:         { title: "Badge",         desc: "Inline-Label mit Farbschema, Varianten, Icon- und Dot-Support." },
+      changelog:     { title: "Changelog",     desc: "Info-Button der ein Modal mit Markdown-Changelog öffnet — lädt die Datei per Fetch." },
     },
     ex: {
       variants:    "Varianten",
@@ -124,6 +126,7 @@ const S = {
       badgeSizes:  "Größen",
       badgeDot:    "Dot-Indikator",
       badgeIcon:   "Mit Icon",
+      changelogStd: "Standard",
     },
   },
   en: {
@@ -154,6 +157,7 @@ const S = {
       toast:         { title: "Toast",         desc: "Notification system with provider, hook and auto-dismiss." },
       tabs:          { title: "Tabs",          desc: "Tab navigation with active indigo indicator — horizontal or vertical." },
       badge:         { title: "Badge",         desc: "Inline label with color scheme, variants, icon and dot support." },
+      changelog:     { title: "Changelog",     desc: "Info button that opens a modal with a Markdown changelog — fetches the file on demand." },
     },
     ex: {
       variants:    "Variants",
@@ -202,6 +206,7 @@ const S = {
       badgeSizes:  "Sizes",
       badgeDot:    "Dot Indicator",
       badgeIcon:   "With Icon",
+      changelogStd: "Standard",
     },
   },
 } as const;
@@ -362,6 +367,13 @@ const TABS_PROPS: readonly PropRowBase[] = [
   { id: 8,  prop: "children",         type: "ReactNode (TabPanel)",          dflt: "—",              desc_de: "TabPanel-Kinder — nur aktives Panel wird gerendert", desc_en: "TabPanel children — only active panel is rendered" },
 ];
 
+const CHANGELOG_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "program", type: "string", dflt: "—", desc_de: "Name der Anwendung — erscheint im Modal-Titel",       desc_en: "Application name — shown in modal title" },
+  { id: 2, prop: "version", type: "string", dflt: "—", desc_de: "Aktuelle Versionsnummer — erscheint im Modal-Titel",  desc_en: "Current version number — shown in modal title" },
+  { id: 3, prop: "date",    type: "string", dflt: "—", desc_de: "Datum des Releases — erscheint im Modal-Titel",       desc_en: "Release date — shown in modal title" },
+  { id: 4, prop: "path",    type: "string", dflt: "—", desc_de: "URL-Pfad zur Markdown-Datei (z. B. /CHANGELOG.md)",  desc_en: "URL path to the Markdown file (e.g. /CHANGELOG.md)" },
+];
+
 const BADGE_PROPS: readonly PropRowBase[] = [
   { id: 1, prop: "children",     type: "ReactNode",                                     dflt: "—",         desc_de: "Badge-Text oder -Inhalt",              desc_en: "Badge text or content" },
   { id: 2, prop: "color",        type: "neutral | info | success | warning | error",    dflt: '"neutral"', desc_de: "Farbschema",                           desc_en: "Color scheme" },
@@ -492,7 +504,7 @@ const NAV_KEYS = [
   "install",
   "card", "button", "input", "dropdown", "combobox", "datepicker",
   "titelborder", "navigationbar", "accordion", "tabelle",
-  "modal", "toast", "tabs", "badge",
+  "modal", "toast", "tabs", "badge", "changelog",
 ] as const;
 
 type NavKey = typeof NAV_KEYS[number];
@@ -513,6 +525,7 @@ const IMPORT_STRINGS: Record<NavKey, string> = {
   toast:         'import { ToastProvider, useToast } from "./Components/Toast"',
   tabs:          'import { Tabs, TabPanel } from "./Components/Tabs"',
   badge:         'import { Badge } from "./Components/Badge"',
+  changelog:     'import { Changelog } from "./Components/Changelog"',
 };
 
 // ── NavigationBar demo helpers ────────────────────────────────────────────────
@@ -1732,6 +1745,45 @@ show("Dauerhaft", { duration: 0 });   // bleibt bis manuell geschlossen`}
 <Badge color="neutral" icon={Star}        iconPosition="right">Featured</Badge>`}
               />
               {pt(BADGE_PROPS)}
+            </Section>
+
+            {/* Changelog */}
+            <Section id="changelog" title={s.sections.changelog.title} description={s.sections.changelog.desc} importStr={IMPORT_STRINGS.changelog}>
+              <ExampleBlock
+                label={ex.changelogStd}
+                preview={
+                  <div className="flex items-center gap-3">
+                    <Changelog program="SimpleTailwindUI" version="v1.1.0" date="02.06.2026" path="/CHANGELOG.md" />
+                    <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                      {lang === "de" ? "← Info-Button klicken" : "← Click info button"}
+                    </span>
+                  </div>
+                }
+                code={`import { Changelog } from "@levin-the-doctor/simple-tailwind-ui"
+
+<Changelog
+  program="MeineApp"
+  version="v2.3.0"
+  date="02.06.2026"
+  path="/CHANGELOG.md"
+/>`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Einbindung — Peer-Dependency" : "Setup — peer dependency"}
+                preview={
+                  <div className="text-sm text-zinc-500 dark:text-zinc-400 flex flex-col gap-1">
+                    <span>{lang === "de" ? "Zusätzliche Peer-Dependency notwendig:" : "Additional peer dependency required:"}</span>
+                    <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded font-mono text-indigo-600 dark:text-indigo-400 w-fit">
+                      npm install react-markdown
+                    </code>
+                  </div>
+                }
+                code={`npm install react-markdown
+
+// CHANGELOG.md im /public-Ordner ablegen
+// → wird per fetch() beim Öffnen des Modals geladen`}
+              />
+              {pt(CHANGELOG_PROPS)}
             </Section>
 
           </main>

@@ -1,4 +1,6 @@
 export { Accordion } from "./Components/Accordion";
+export { Changelog } from "./Components/Changelog";
+export type { ChangelogProps } from "./Components/Changelog";
 export { Badge } from "./Components/Badge";
 export { Button } from "./Components/Button";
 export { Card } from "./Components/Card";

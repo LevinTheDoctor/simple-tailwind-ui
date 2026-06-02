@@ -7,7 +7,7 @@ export default defineConfig({
   sourcemap:   true,
   clean:       true,
   outDir:      "lib",
-  external:    ["react", "react-dom", "lucide-react"],
+  external:    ["react", "react-dom", "lucide-react", "react-markdown"],
   treeshake:   true,
   esbuildOptions(opts) {
     opts.jsx = "automatic";

@@ -1,4 +1,4 @@
-import { type ReactNode, type HTMLAttributes } from "react";
+import { type ReactNode, type HTMLAttributes, type CSSProperties } from "react";
 import { type LucideIcon } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -48,9 +48,16 @@ const iconSizeClasses: Record<NavBarSize, string> = {
 };
 
 const navContainerH: Record<NavBarSize, string> = {
-  sm: "px-2 h-10",
-  md: "px-3 h-12",
-  lg: "px-4 h-14",
+  sm: "h-10",
+  md: "h-12",
+  lg: "h-14",
+};
+
+// Minimum horizontal padding — used inside max() so safe-area-inset wins when larger
+const navPaddingX: Record<NavBarSize, string> = {
+  sm: "0.5rem",
+  md: "0.75rem",
+  lg: "1rem",
 };
 
 const navContainerV: Record<NavBarSize, string> = {
@@ -85,6 +92,9 @@ export function NavigationBar({
 }: NavigationBarProps) {
   const isH = orientation === "horizontal";
 
+  // Extract style so we can merge safe-area insets without conflicting with spread
+  const { style: userStyle, ...restProps } = rest;
+
   const navClasses = [
     "flex transition-colors duration-200",
     isH ? "flex-row items-center" : "flex-col",
@@ -95,8 +105,16 @@ export function NavigationBar({
     className ?? "",
   ].join(" ");
 
+  // Use max() so the padding is at least the design default but grows with the notch/Dynamic Island
+  const safeAreaStyle: CSSProperties = isH ? {
+    paddingLeft:  `max(${navPaddingX[size]}, env(safe-area-inset-left))`,
+    paddingRight: `max(${navPaddingX[size]}, env(safe-area-inset-right))`,
+  } : {};
+
+  const navStyle: CSSProperties = { ...safeAreaStyle, ...userStyle };
+
   return (
-    <nav className={navClasses} {...rest}>
+    <nav className={navClasses} style={navStyle} {...restProps}>
       {/* Logo slot */}
       {logo !== undefined && (
         <div className={[
@@ -108,10 +126,13 @@ export function NavigationBar({
       )}
 
       {/* Items */}
-      <div className={[
-        "flex",
-        isH ? "flex-row items-center flex-1 gap-0.5" : "flex-col flex-1 gap-0.5",
-      ].join(" ")}>
+      <div
+        className={[
+          "flex",
+          isH ? "flex-row items-center flex-1 gap-0.5 overflow-x-auto" : "flex-col flex-1 gap-0.5",
+        ].join(" ")}
+        style={isH ? { scrollbarWidth: "none" } : undefined}
+      >
         {items.map(item => {
           // Custom React node — render as-is, no active state handling
           if (item.node !== undefined) {

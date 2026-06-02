@@ -23,7 +23,7 @@ import { Changelog } from "../Components/Changelog";
 import {
   Search, Mail, Globe, Trash2, Plus, Save, User, Copy, Check,
   Home, LayoutDashboard, BarChart3, Settings, Bell, MoreHorizontal,
-  Tag, Star, AlertCircle, ShieldCheck, Zap, Download,
+  Tag, Star, AlertCircle, ShieldCheck, Zap, Download, Sun, Moon,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -923,9 +923,13 @@ export function Doku() {
                 </button>
               ))}
             </div>
-            <Button variant="outline" color="neutral" size="sm" onClick={() => setDark(d => !d)}>
-              {dark ? s.light : s.dark}
-            </Button>
+            <button
+              onClick={() => setDark(d => !d)}
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-150"
+              aria-label={dark ? s.light : s.dark}
+            >
+              {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
           </div>
         </header>
 

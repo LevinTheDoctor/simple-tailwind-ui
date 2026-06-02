@@ -911,7 +911,7 @@ export function Doku() {
         <div className="flex">
 
           {/* ── Sidebar ──────────────────────────────────────────────────── */}
-          <aside className="w-56 shrink-0 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-zinc-200 dark:border-zinc-800">
+          <aside className="w-56 shrink-0 sticky top-14 h-[calc(100vh-6rem)] overflow-y-auto border-r border-zinc-200 dark:border-zinc-800">
             <div className="p-4">
               {/* Intro panel */}
               <div className="mb-5 p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/30 border border-indigo-100 dark:border-indigo-900/40">

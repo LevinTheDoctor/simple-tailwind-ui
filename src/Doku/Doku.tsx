@@ -511,21 +511,21 @@ type NavKey = typeof NAV_KEYS[number];
 
 const IMPORT_STRINGS: Record<NavKey, string> = {
   install:       'npm install @levin-the-doctor/simple-tailwind-ui',
-  card:          'import { Card } from "./Components/Card"',
-  button:        'import { Button } from "./Components/Button"',
-  input:         'import { Input } from "./Components/Input"',
-  dropdown:      'import { Dropdown } from "./Components/DropDown"',
-  combobox:      'import { ComboBox } from "./Components/ComboBox"',
-  datepicker:    'import { DatePicker } from "./Components/Datepicker"',
-  titelborder:   'import { TitelBorder } from "./Components/TitelBorder"',
-  navigationbar: 'import { NavigationBar } from "./Components/NavigationBar"',
-  accordion:     'import { Accordion } from "./Components/Accordion"',
-  tabelle:       'import { Tabelle } from "./Components/Tabelle"',
-  modal:         'import { Modal } from "./Components/Modal"',
-  toast:         'import { ToastProvider, useToast } from "./Components/Toast"',
-  tabs:          'import { Tabs, TabPanel } from "./Components/Tabs"',
-  badge:         'import { Badge } from "./Components/Badge"',
-  changelog:     'import { Changelog } from "./Components/Changelog"',
+  card:          'import { Card } from "@levin-the-doctor/simple-tailwind-ui"',
+  button:        'import { Button } from "@levin-the-doctor/simple-tailwind-ui"',
+  input:         'import { Input } from "@levin-the-doctor/simple-tailwind-ui"',
+  dropdown:      'import { Dropdown } from "@levin-the-doctor/simple-tailwind-ui"',
+  combobox:      'import { ComboBox } from "@levin-the-doctor/simple-tailwind-ui"',
+  datepicker:    'import { DatePicker } from "@levin-the-doctor/simple-tailwind-ui"',
+  titelborder:   'import { TitelBorder } from "@levin-the-doctor/simple-tailwind-ui"',
+  navigationbar: 'import { NavigationBar } from "@levin-the-doctor/simple-tailwind-ui"',
+  accordion:     'import { Accordion } from "@levin-the-doctor/simple-tailwind-ui"',
+  tabelle:       'import { Tabelle } from "@levin-the-doctor/simple-tailwind-ui"',
+  modal:         'import { Modal } from "@levin-the-doctor/simple-tailwind-ui"',
+  toast:         'import { ToastProvider, useToast } from "@levin-the-doctor/simple-tailwind-ui"',
+  tabs:          'import { Tabs, TabPanel } from "@levin-the-doctor/simple-tailwind-ui"',
+  badge:         'import { Badge } from "@levin-the-doctor/simple-tailwind-ui"',
+  changelog:     'import { Changelog } from "@levin-the-doctor/simple-tailwind-ui"',
 };
 
 // ── NavigationBar demo helpers ────────────────────────────────────────────────
@@ -917,7 +917,7 @@ export function Doku() {
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
                     {lang === "de" ? "2. Peer-Dependencies" : "2. Peer dependencies"}
                   </p>
-                  <CodeBlock code="npm install react react-dom lucide-react tailwindcss" />
+                  <CodeBlock code="npm install react react-dom lucide-react tailwindcss react-markdown" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">

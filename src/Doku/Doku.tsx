@@ -946,7 +946,7 @@ export function Doku() {
           </aside>
 
           {/* ── Content ──────────────────────────────────────────────────── */}
-          <main className="flex-1 px-10 py-8 max-w-3xl flex flex-col gap-0">
+          <main className="flex-1 px-10 py-8 pb-16 max-w-3xl flex flex-col gap-0">
 
             {/* Install */}
             <Section id="install" title={s.sections.install.title} description={s.sections.install.desc} importStr={IMPORT_STRINGS.install}>
@@ -1813,22 +1813,22 @@ show("Dauerhaft", { duration: 0 });   // bleibt bis manuell geschlossen`}
               {pt(CHANGELOG_PROPS)}
             </Section>
 
-            {/* Footer */}
-            <footer className="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-              <span className="text-xs text-zinc-400 dark:text-zinc-500">
-                © {new Date().getFullYear()} SimpleTailwindUI — Levin Rüßmann
-              </span>
-              <button
-                onClick={() => setShowPrivacy(true)}
-                className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer underline underline-offset-2"
-              >
-                {lang === "de" ? "Datenschutzerklärung" : "Privacy Policy"}
-              </button>
-            </footer>
-
           </main>
         </div>
       </div>
+
+      {/* Fixed footer */}
+      <footer className="fixed bottom-0 left-0 right-0 z-20 h-10 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 px-6 flex items-center justify-between">
+        <span className="text-xs text-zinc-400 dark:text-zinc-500">
+          © {new Date().getFullYear()} SimpleTailwindUI — Levin Rüßmann
+        </span>
+        <button
+          onClick={() => setShowPrivacy(true)}
+          className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer underline underline-offset-2"
+        >
+          {lang === "de" ? "Datenschutzerklärung" : "Privacy Policy"}
+        </button>
+      </footer>
 
       {/* Privacy Modal */}
       <Modal

@@ -23,7 +23,7 @@ import { Changelog } from "../Components/Changelog";
 import {
   Search, Mail, Globe, Trash2, Plus, Save, User, Copy, Check,
   Home, LayoutDashboard, BarChart3, Settings, Bell, MoreHorizontal,
-  Tag, Star, AlertCircle, ShieldCheck, Zap, Download, Sun, Moon,
+  Tag, Star, AlertCircle, ShieldCheck, Zap, Download, Sun, Moon, Menu,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -471,13 +471,13 @@ function Section({ id, title, description, importStr, children }: {
   return (
     <section id={id} className="flex flex-col gap-7 pb-16 scroll-mt-16">
       <div className="pb-4">
-        <div className="flex items-start justify-between gap-4 mb-1">
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">{title}</h2>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-1">
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 shrink-0">{title}</h2>
           <button
             onClick={copy}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer shrink-0 group"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer group self-start overflow-hidden max-w-full"
           >
-            <code className="text-xs font-mono text-indigo-600 dark:text-indigo-400 select-none">
+            <code className="text-xs font-mono text-indigo-600 dark:text-indigo-400 select-none truncate">
               {importStr}
             </code>
             <span className="text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
@@ -809,6 +809,7 @@ export function Doku() {
   const [lang, setLang] = useState<Lang>("de");
   const [active, setActive] = useState<NavKey>("install");
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [view, setView] = useState<"docs" | "builder">("docs");
 
   useEffect(() => {
@@ -845,6 +846,7 @@ export function Doku() {
 
   const scrollTo = (id: NavKey) => {
     setActive(id);
+    setSidebarOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -856,10 +858,19 @@ export function Doku() {
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-200">
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
-        <header className="sticky top-0 z-20 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-6 h-14 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <header className="sticky top-0 z-20 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-4 md:px-6 h-14 flex items-center justify-between gap-2 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-3">
+            {view === "docs" && (
+              <button
+                onClick={() => setSidebarOpen(o => !o)}
+                className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-150"
+                aria-label="Navigation"
+              >
+                <Menu className="w-4 h-4" />
+              </button>
+            )}
             <img src="/SimpleTailwindUILogo.svg" alt="SimpleTailwindUI Logo" className="w-8 h-8 shrink-0" />
-            <div className="flex flex-col leading-tight">
+            <div className="hidden sm:flex flex-col leading-tight">
               <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100">{s.uiTitle}</span>
               <span className="text-xs text-zinc-400 dark:text-zinc-500">{s.uiSub}</span>
             </div>
@@ -870,8 +881,8 @@ export function Doku() {
             {(["docs", "builder"] as const).map(v => (
               <button
                 key={v}
-                onClick={() => setView(v)}
-                className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 cursor-pointer ${
+                onClick={() => { setView(v); setSidebarOpen(false); }}
+                className={`px-2.5 sm:px-4 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 cursor-pointer ${
                   view === v
                     ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm"
                     : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
@@ -893,14 +904,14 @@ export function Doku() {
               title={lang === "de" ? "Claude-Skill für diese Bibliothek herunterladen" : "Download Claude skill for this library"}
             >
               <Download className="w-3.5 h-3.5 shrink-0" />
-              <span>Claude Skill</span>
+              <span className="hidden sm:inline">Claude Skill</span>
             </a>
             {/* GitHub link */}
             <a
               href="https://github.com/LevinTheDoctor/simple-tailwind-ui"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-8 h-8 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-150"
+              className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-150"
               aria-label="GitHub Repository"
             >
               <svg viewBox="0 0 24 24" className="w-4.5 h-4.5" fill="currentColor" aria-hidden="true">
@@ -936,9 +947,16 @@ export function Doku() {
         {view === "builder" && <Builder lang={lang} />}
 
         <div className={`flex ${view === "builder" ? "hidden" : ""}`}>
+          {/* Mobile sidebar overlay */}
+          {sidebarOpen && (
+            <div
+              className="fixed inset-x-0 top-14 bottom-0 bg-black/30 z-[25] md:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
 
           {/* ── Sidebar ──────────────────────────────────────────────────── */}
-          <aside className="w-56 shrink-0 sticky top-14 h-[calc(100vh-6rem)] overflow-y-auto border-r border-zinc-200 dark:border-zinc-800">
+          <aside className={`fixed md:sticky top-14 bottom-0 md:bottom-auto left-0 z-30 md:z-auto w-64 md:w-56 shrink-0 md:h-[calc(100vh-6rem)] overflow-y-auto border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
             <div className="p-4">
               {/* Intro panel */}
               <div className="mb-5 p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/30 border border-indigo-100 dark:border-indigo-900/40">
@@ -973,7 +991,7 @@ export function Doku() {
           </aside>
 
           {/* ── Content ──────────────────────────────────────────────────── */}
-          <main className="flex-1 px-10 py-8 pb-16 max-w-3xl flex flex-col gap-0">
+          <main className="flex-1 px-4 sm:px-6 md:px-10 py-6 md:py-8 pb-20 max-w-3xl flex flex-col gap-0 min-w-0">
 
             {/* Install */}
             <Section id="install" title={s.sections.install.title} description={s.sections.install.desc} importStr={IMPORT_STRINGS.install}>

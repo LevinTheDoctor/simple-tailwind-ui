@@ -364,6 +364,7 @@ export function Builder({ lang }: { lang: Lang }) {
   const [selectedId, setSelectedId]= useState<string | null>(null);
   const [copied,     setCopied]    = useState(false);
   const [actionMsg,  setActionMsg] = useState<string | null>(null);
+  const [mobileTab,  setMobileTab] = useState<"palette" | "canvas" | "props">("canvas");
   const uid = useId();
 
   const selected = items.find(i => i.id === selectedId) ?? null;
@@ -383,6 +384,7 @@ export function Builder({ lang }: { lang: Lang }) {
     const id = `${uid}-${Date.now()}`;
     setItems(prev => [...prev, { id, type, props: defaultProps(type) }]);
     setSelectedId(id);
+    setMobileTab("canvas");
   }
 
   function remove(id: string) {
@@ -412,7 +414,7 @@ export function Builder({ lang }: { lang: Lang }) {
   }
 
   return (
-    <div className="flex h-[calc(100vh-6rem)] overflow-hidden relative">
+    <div className="flex flex-col h-[calc(100vh-6rem)] overflow-hidden relative">
 
       {/* Action toast */}
       {actionMsg && (
@@ -425,8 +427,28 @@ export function Builder({ lang }: { lang: Lang }) {
         </div>
       )}
 
+      {/* ── Mobile tab bar ────────────────────────────────────────────── */}
+      <div className="flex md:hidden shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        {(["palette", "canvas", "props"] as const).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setMobileTab(tab)}
+            className={`flex-1 py-2.5 text-xs font-semibold capitalize transition-colors cursor-pointer ${
+              mobileTab === tab
+                ? "text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-500 dark:border-indigo-400"
+                : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+            }`}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Panel row ─────────────────────────────────────────────────── */}
+      <div className="flex flex-1 overflow-hidden min-h-0">
+
       {/* ── Palette ──────────────────────────────────────────────────── */}
-      <div className="w-44 shrink-0 border-r border-zinc-200 dark:border-zinc-800 overflow-y-auto p-3 flex flex-col gap-3">
+      <div className={`border-r border-zinc-200 dark:border-zinc-800 overflow-y-auto p-3 ${mobileTab === "palette" ? "flex flex-1 flex-col gap-3" : "hidden"} md:flex md:flex-col md:gap-3 md:w-44 md:flex-none`}>
         {GROUPS.map(g => {
           const groupDefs = DEFS.filter(d => d.group === g.key);
           return (
@@ -452,7 +474,7 @@ export function Builder({ lang }: { lang: Lang }) {
       </div>
 
       {/* ── Canvas ───────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3 min-w-0">
+      <div className={`overflow-y-auto p-6 min-w-0 ${mobileTab === "canvas" ? "flex flex-1 flex-col gap-3" : "hidden"} md:flex md:flex-col md:flex-1 md:gap-3`}>
         {items.length === 0 ? (
           <div className="h-full flex items-center justify-center text-sm text-zinc-400 dark:text-zinc-500 text-center px-8">
             {t.empty}
@@ -460,7 +482,7 @@ export function Builder({ lang }: { lang: Lang }) {
         ) : items.map((item, idx) => (
           <div
             key={item.id}
-            onClick={() => setSelectedId(item.id)}
+            onClick={() => { setSelectedId(item.id); setMobileTab("props"); }}
             className={`relative group rounded-xl border-2 p-4 cursor-pointer transition-all ${
               selectedId === item.id
                 ? "border-indigo-500 dark:border-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/20"
@@ -494,7 +516,7 @@ export function Builder({ lang }: { lang: Lang }) {
       </div>
 
       {/* ── Props + Code ─────────────────────────────────────────────── */}
-      <div className="shrink-0 border-l border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden" style={{ width: "17rem" }}>
+      <div className={`border-l border-zinc-200 dark:border-zinc-800 overflow-hidden ${mobileTab === "props" ? "flex flex-1 flex-col" : "hidden"} md:flex md:flex-col md:w-[17rem] md:flex-none`}>
 
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">{t.props}</p>
@@ -585,6 +607,7 @@ export function Builder({ lang }: { lang: Lang }) {
             }
           </pre>
         </div>
+      </div>
       </div>
     </div>
   );

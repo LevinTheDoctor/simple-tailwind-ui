@@ -1,4 +1,5 @@
 import { useState, useEffect, type ReactNode } from "react";
+import { Builder } from "./Builder";
 import { Card } from "../Components/Card";
 import { Button } from "../Components/Button";
 import { Input } from "../Components/Input";
@@ -808,6 +809,7 @@ export function Doku() {
   const [lang, setLang] = useState<Lang>("de");
   const [active, setActive] = useState<NavKey>("install");
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [view, setView] = useState<"docs" | "builder">("docs");
 
   useEffect(() => {
     if (dark) {
@@ -863,6 +865,25 @@ export function Doku() {
             </div>
           </div>
 
+          {/* ── View tabs ──────────────────────────────────────────────── */}
+          <div className="flex items-center bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5 gap-0.5">
+            {(["docs", "builder"] as const).map(v => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 cursor-pointer ${
+                  view === v
+                    ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm"
+                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+                }`}
+              >
+                {v === "docs"
+                  ? (lang === "de" ? "Dokumentation" : "Docs")
+                  : (lang === "de" ? "Builder" : "Builder")}
+              </button>
+            ))}
+          </div>
+
           <div className="flex items-center gap-2">
             {/* Claude skill download */}
             <a
@@ -908,7 +929,9 @@ export function Doku() {
           </div>
         </header>
 
-        <div className="flex">
+        {view === "builder" && <Builder lang={lang} />}
+
+        <div className={`flex ${view === "builder" ? "hidden" : ""}`}>
 
           {/* ── Sidebar ──────────────────────────────────────────────────── */}
           <aside className="w-56 shrink-0 sticky top-14 h-[calc(100vh-6rem)] overflow-y-auto border-r border-zinc-200 dark:border-zinc-800">

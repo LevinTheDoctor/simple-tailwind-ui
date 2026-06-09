@@ -19,6 +19,7 @@ type DropdownProps = {
   readonly icon?: LucideIcon;
   readonly loading?: boolean;
   readonly disabled?: boolean;
+  readonly fullWidth?: boolean;
   readonly placeholder?: string;
   readonly value?: string;
   readonly onChange?: (value: string) => void;
@@ -80,6 +81,7 @@ export function Dropdown({
   icon: Icon,
   loading = false,
   disabled = false,
+  fullWidth = false,
   placeholder = "Auswaehlen...",
   value,
   onChange,
@@ -124,7 +126,7 @@ export function Dropdown({
   ].join(" ");
 
   return (
-    <TitelBorder title={title} size={size} variant={variant} className={className}>
+    <TitelBorder title={title} size={size} variant={variant} fullWidth={fullWidth} className={className}>
       <div ref={containerRef} className="relative">
 
         {/* Left icon */}

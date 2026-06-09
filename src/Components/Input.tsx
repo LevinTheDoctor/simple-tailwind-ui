@@ -15,6 +15,7 @@ type InputProps = {
   readonly icon?: LucideIcon;
   readonly iconPosition?: IconPosition;
   readonly loading?: boolean;
+  readonly fullWidth?: boolean;
   readonly className?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
 
@@ -59,6 +60,7 @@ export function Input({
   icon: Icon,
   iconPosition = "right",
   loading = false,
+  fullWidth = false,
   className = "",
   ...rest
 }: InputProps) {
@@ -80,7 +82,7 @@ export function Input({
   ].join(" ");
 
   return (
-    <TitelBorder title={title} size={size} variant={variant} className={className}>
+    <TitelBorder title={title} size={size} variant={variant} fullWidth={fullWidth} className={className}>
       <div className="relative">
         {showLeft && ActiveIcon && (
           <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 pointer-events-none">

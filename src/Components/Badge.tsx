@@ -14,6 +14,7 @@ type BadgeProps = {
   readonly icon?:         LucideIcon;
   readonly iconPosition?: IconPosition;
   readonly dot?:          boolean;
+  readonly fullWidth?:    boolean;
   readonly className?:    string;
 } & Omit<HTMLAttributes<HTMLSpanElement>, "className" | "children">;
 
@@ -79,6 +80,7 @@ export function Badge({
   icon: Icon,
   iconPosition  = "left",
   dot           = false,
+  fullWidth     = false,
   className     = "",
   ...rest
 }: BadgeProps) {
@@ -93,7 +95,8 @@ export function Badge({
   return (
     <span
       className={[
-        "inline-flex items-center font-medium rounded-full",
+        fullWidth ? "flex w-full justify-center" : "inline-flex",
+        "items-center font-medium rounded-full",
         sizeClasses[size],
         colorVariantClasses[color][variant],
         className,

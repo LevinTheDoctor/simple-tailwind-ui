@@ -18,6 +18,7 @@ type DatePickerProps = {
   readonly icon?: LucideIcon;
   readonly loading?: boolean;
   readonly disabled?: boolean;
+  readonly fullWidth?: boolean;
   readonly displayFormat?: DisplayFormat;
   readonly outputFormat?: OutputFormat;
   readonly value?: Date | null;
@@ -133,6 +134,7 @@ export function DatePicker({
   icon: Icon,
   loading = false,
   disabled = false,
+  fullWidth = false,
   displayFormat = "de",
   outputFormat = "date",
   value,
@@ -203,7 +205,7 @@ export function DatePicker({
   ].join(" ");
 
   return (
-    <TitelBorder title={title} size={size} variant={variant} className={className}>
+    <TitelBorder title={title} size={size} variant={variant} fullWidth={fullWidth} className={className}>
       <div ref={containerRef} className="relative">
 
         {/* Icon links */}

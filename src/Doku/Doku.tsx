@@ -226,9 +226,10 @@ const toRows = (lang: Lang, data: readonly PropRowBase[]): PropRow[] =>
 const CARD_PROPS: readonly PropRowBase[] = [
   { id: 1, prop: "title",     type: "string",                                dflt: "—",         desc_de: "Überschrift der Card (optional)",              desc_en: "Card heading (optional)" },
   { id: 2, prop: "variant",   type: "default | elevated | outlined | ghost", dflt: '"default"', desc_de: "Visueller Stil der Card",                      desc_en: "Visual style of the card" },
-  { id: 3, prop: "size",      type: "sm | md | lg",                          dflt: '"md"',      desc_de: "Innenabstand und Gesamtgröße",                 desc_en: "Padding and overall size" },
-  { id: 4, prop: "className", type: "string",                                dflt: '""',        desc_de: "Zusätzliche Tailwind-Klassen",                 desc_en: "Additional Tailwind classes" },
-  { id: 5, prop: "children",  type: "ReactNode",                             dflt: "—",         desc_de: "Inhalt der Card",                              desc_en: "Card content" },
+  { id: 3, prop: "size",      type: "sm | md | lg",                          dflt: '"md"',      desc_de: "Innenabstand (Padding)",                       desc_en: "Padding size" },
+  { id: 4, prop: "fullWidth", type: "boolean",                               dflt: "false",     desc_de: "Nimmt volle Breite ein",                       desc_en: "Takes full width" },
+  { id: 5, prop: "className", type: "string",                                dflt: '""',        desc_de: "Zusätzliche Tailwind-Klassen",                 desc_en: "Additional Tailwind classes" },
+  { id: 6, prop: "children",  type: "ReactNode",                             dflt: "—",         desc_de: "Inhalt der Card",                              desc_en: "Card content" },
 ];
 
 const BUTTON_PROPS: readonly PropRowBase[] = [
@@ -247,11 +248,12 @@ const INPUT_PROPS: readonly PropRowBase[] = [
   { id: 2, prop: "variant",      type: "default | subtle | strong",          dflt: '"default"', desc_de: "Rahmen- und Hintergrundstil",                  desc_en: "Border and background style" },
   { id: 3, prop: "icon",         type: "LucideIcon",                         dflt: "—",         desc_de: "Icon links oder rechts im Feld",               desc_en: "Icon left or right in the field" },
   { id: 4, prop: "iconPosition", type: "left | right",                       dflt: '"left"',    desc_de: "Position des Icons",                           desc_en: "Icon position" },
-  { id: 5, prop: "loading",      type: "boolean",                            dflt: "false",     desc_de: "Zeigt Ladeindikator",                          desc_en: "Shows loading indicator" },
-  { id: 6, prop: "disabled",     type: "boolean",                            dflt: "false",     desc_de: "Deaktiviert das Feld",                         desc_en: "Disables the field" },
-  { id: 7, prop: "placeholder",  type: "string",                             dflt: "—",         desc_de: "Platzhaltertext",                              desc_en: "Placeholder text" },
-  { id: 8, prop: "value",        type: "string",                             dflt: "—",         desc_de: "Kontrollierter Wert",                          desc_en: "Controlled value" },
-  { id: 9, prop: "onChange",     type: "(e: ChangeEvent) => void",           dflt: "—",         desc_de: "Callback bei Eingabe",                         desc_en: "Callback on input" },
+  { id: 5,  prop: "loading",      type: "boolean",                           dflt: "false",     desc_de: "Zeigt Ladeindikator",                          desc_en: "Shows loading indicator" },
+  { id: 6,  prop: "disabled",    type: "boolean",                            dflt: "false",     desc_de: "Deaktiviert das Feld",                         desc_en: "Disables the field" },
+  { id: 7,  prop: "fullWidth",   type: "boolean",                            dflt: "false",     desc_de: "Nimmt volle Breite ein",                       desc_en: "Takes full width" },
+  { id: 8,  prop: "placeholder", type: "string",                             dflt: "—",         desc_de: "Platzhaltertext",                              desc_en: "Placeholder text" },
+  { id: 9,  prop: "value",       type: "string",                             dflt: "—",         desc_de: "Kontrollierter Wert",                          desc_en: "Controlled value" },
+  { id: 10, prop: "onChange",    type: "(e: ChangeEvent) => void",           dflt: "—",         desc_de: "Callback bei Eingabe",                         desc_en: "Callback on input" },
 ];
 
 const DROPDOWN_PROPS: readonly PropRowBase[] = [
@@ -259,10 +261,11 @@ const DROPDOWN_PROPS: readonly PropRowBase[] = [
   { id: 2, prop: "options",  type: "{ value: string; label: string }[]",      dflt: "—",         desc_de: "Auswahloptionen",                              desc_en: "Select options" },
   { id: 3, prop: "variant",  type: "default | subtle | strong",               dflt: '"default"', desc_de: "Rahmen- und Hintergrundstil",                  desc_en: "Border and background style" },
   { id: 4, prop: "icon",     type: "LucideIcon",                              dflt: "—",         desc_de: "Icon links im Select",                         desc_en: "Icon on the left" },
-  { id: 5, prop: "loading",  type: "boolean",                                 dflt: "false",     desc_de: "Zeigt Ladeindikator",                          desc_en: "Shows loading indicator" },
-  { id: 6, prop: "disabled", type: "boolean",                                 dflt: "false",     desc_de: "Deaktiviert das Select",                       desc_en: "Disables the select" },
-  { id: 7, prop: "value",    type: "string",                                  dflt: "—",         desc_de: "Kontrollierter Wert",                          desc_en: "Controlled value" },
-  { id: 8, prop: "onChange", type: "(e: ChangeEvent) => void",                dflt: "—",         desc_de: "Callback bei Auswahl",                         desc_en: "Callback on selection" },
+  { id: 5, prop: "loading",   type: "boolean",                                dflt: "false",     desc_de: "Zeigt Ladeindikator",                          desc_en: "Shows loading indicator" },
+  { id: 6, prop: "disabled",  type: "boolean",                                dflt: "false",     desc_de: "Deaktiviert das Select",                       desc_en: "Disables the select" },
+  { id: 7, prop: "fullWidth", type: "boolean",                                dflt: "false",     desc_de: "Nimmt volle Breite ein",                       desc_en: "Takes full width" },
+  { id: 8, prop: "value",     type: "string",                                 dflt: "—",         desc_de: "Kontrollierter Wert",                          desc_en: "Controlled value" },
+  { id: 9, prop: "onChange",  type: "(e: ChangeEvent) => void",               dflt: "—",         desc_de: "Callback bei Auswahl",                         desc_en: "Callback on selection" },
 ];
 
 const COMBOBOX_PROPS: readonly PropRowBase[] = [
@@ -272,6 +275,7 @@ const COMBOBOX_PROPS: readonly PropRowBase[] = [
   { id: 4, prop: "maxVisible", type: "number",                                dflt: "—",         desc_de: "Max. sichtbare Tags bei Mehrfachauswahl",      desc_en: "Max visible tags in multi-select" },
   { id: 5, prop: "loading",    type: "boolean",                               dflt: "false",     desc_de: "Zeigt Ladeindikator",                          desc_en: "Shows loading indicator" },
   { id: 6, prop: "disabled",   type: "boolean",                               dflt: "false",     desc_de: "Deaktiviert das Feld",                         desc_en: "Disables the field" },
+  { id: 7, prop: "fullWidth",  type: "boolean",                               dflt: "false",     desc_de: "Nimmt volle Breite ein",                       desc_en: "Takes full width" },
 ];
 
 const DATEPICKER_PROPS: readonly PropRowBase[] = [
@@ -281,17 +285,19 @@ const DATEPICKER_PROPS: readonly PropRowBase[] = [
   { id: 4, prop: "minDate",       type: "Date",                                    dflt: "—",         desc_de: "Frühestes auswählbares Datum",           desc_en: "Earliest selectable date" },
   { id: 5, prop: "maxDate",       type: "Date",                                    dflt: "—",         desc_de: "Spätestes auswählbares Datum",           desc_en: "Latest selectable date" },
   { id: 6, prop: "variant",       type: "default | subtle | strong",               dflt: '"default"', desc_de: "Rahmen- und Hintergrundstil",            desc_en: "Border and background style" },
-  { id: 7, prop: "loading",       type: "boolean",                                 dflt: "false",     desc_de: "Zeigt Ladeindikator",                   desc_en: "Shows loading indicator" },
-  { id: 8, prop: "disabled",      type: "boolean",                                 dflt: "false",     desc_de: "Deaktiviert den Picker",                desc_en: "Disables the picker" },
-  { id: 9, prop: "onChange",      type: "(value: Date | string | number) => void", dflt: "—",         desc_de: "Callback — Typ hängt von outputFormat ab", desc_en: "Callback — type depends on outputFormat" },
+  { id: 7,  prop: "loading",    type: "boolean",                                    dflt: "false",     desc_de: "Zeigt Ladeindikator",                      desc_en: "Shows loading indicator" },
+  { id: 8,  prop: "disabled",   type: "boolean",                                   dflt: "false",     desc_de: "Deaktiviert den Picker",                   desc_en: "Disables the picker" },
+  { id: 9,  prop: "fullWidth",  type: "boolean",                                   dflt: "false",     desc_de: "Nimmt volle Breite ein",                   desc_en: "Takes full width" },
+  { id: 10, prop: "onChange",   type: "(value: Date | string | number) => void",   dflt: "—",         desc_de: "Callback — Typ hängt von outputFormat ab", desc_en: "Callback — type depends on outputFormat" },
 ];
 
 const TITELBORDER_PROPS: readonly PropRowBase[] = [
   { id: 1, prop: "title",     type: "string",                          dflt: "—",         desc_de: "Legend-Text am oberen Rand",            desc_en: "Legend text at top border" },
   { id: 2, prop: "variant",   type: "default | subtle | strong",       dflt: '"default"', desc_de: "Rahmen- und Hintergrundstil",           desc_en: "Border and background style" },
-  { id: 3, prop: "size",      type: "sm | md | lg",                    dflt: '"md"',      desc_de: "Innenabstand",                          desc_en: "Padding" },
-  { id: 4, prop: "className", type: "string",                          dflt: '""',        desc_de: "Zusätzliche Tailwind-Klassen",          desc_en: "Additional Tailwind classes" },
-  { id: 5, prop: "children",  type: "ReactNode",                       dflt: "—",         desc_de: "Inhalt innerhalb der Border",           desc_en: "Content inside the border" },
+  { id: 3, prop: "size",      type: "sm | md | lg",                    dflt: '"md"',      desc_de: "Innenabstand (Padding)",                desc_en: "Padding size" },
+  { id: 4, prop: "fullWidth", type: "boolean",                         dflt: "false",     desc_de: "Nimmt volle Breite ein",                desc_en: "Takes full width" },
+  { id: 5, prop: "className", type: "string",                          dflt: '""',        desc_de: "Zusätzliche Tailwind-Klassen",          desc_en: "Additional Tailwind classes" },
+  { id: 6, prop: "children",  type: "ReactNode",                       dflt: "—",         desc_de: "Inhalt innerhalb der Border",           desc_en: "Content inside the border" },
 ];
 
 const NAVBAR_PROPS: readonly PropRowBase[] = [
@@ -324,8 +330,9 @@ const ACCORDION_PROPS: readonly PropRowBase[] = [
   { id: 5, prop: "icon",        type: "LucideIcon",                      dflt: "ChevronDown", desc_de: "Ersetzt den Standard-Pfeil",             desc_en: "Replaces the default arrow" },
   { id: 6, prop: "size",        type: "sm | md | lg | full",             dflt: '"md"',        desc_de: "Breite und Schriftgröße",                desc_en: "Width and font size" },
   { id: 7, prop: "variant",     type: "default | subtle | strong",       dflt: '"default"',   desc_de: "Rahmen- und Hintergrundstil",            desc_en: "Border and background style" },
-  { id: 8, prop: "loading",     type: "boolean",                         dflt: "false",       desc_de: "Zeigt Spinner, sperrt Interaktion",      desc_en: "Shows spinner, blocks interaction" },
-  { id: 9, prop: "disabled",    type: "boolean",                         dflt: "false",       desc_de: "Deaktiviert den Toggle",                 desc_en: "Disables toggling" },
+  { id: 8,  prop: "loading",    type: "boolean",                         dflt: "false",       desc_de: "Zeigt Spinner, sperrt Interaktion",      desc_en: "Shows spinner, blocks interaction" },
+  { id: 9,  prop: "disabled",   type: "boolean",                         dflt: "false",       desc_de: "Deaktiviert den Toggle",                 desc_en: "Disables toggling" },
+  { id: 10, prop: "fullWidth",  type: "boolean",                         dflt: "false",       desc_de: "Nimmt volle Breite ein",                 desc_en: "Takes full width" },
 ];
 
 const TABELLE_PROPS: readonly PropRowBase[] = [
@@ -373,7 +380,8 @@ const TABS_PROPS: readonly PropRowBase[] = [
   { id: 5,  prop: "size",             type: "sm | md | lg | full",           dflt: '"md"',           desc_de: "Größe der Tab-Items",                    desc_en: "Tab item size" },
   { id: 6,  prop: "variant",          type: "default | subtle | strong",     dflt: '"default"',      desc_de: "Stil der Trennlinie und des Indikators",  desc_en: "Divider and indicator style" },
   { id: 7,  prop: "orientation",      type: "horizontal | vertical",         dflt: '"horizontal"',   desc_de: "Ausrichtung der Tab-Liste",              desc_en: "Tab list orientation" },
-  { id: 8,  prop: "children",         type: "ReactNode (TabPanel)",          dflt: "—",              desc_de: "TabPanel-Kinder — nur aktives Panel wird gerendert", desc_en: "TabPanel children — only active panel is rendered" },
+  { id: 8,  prop: "fullWidth",        type: "boolean",                       dflt: "false",          desc_de: "Nimmt volle Breite ein",                 desc_en: "Takes full width" },
+  { id: 9,  prop: "children",         type: "ReactNode (TabPanel)",          dflt: "—",              desc_de: "TabPanel-Kinder — nur aktives Panel wird gerendert", desc_en: "TabPanel children — only active panel is rendered" },
 ];
 
 const CHANGELOG_PROPS: readonly PropRowBase[] = [
@@ -391,7 +399,8 @@ const BADGE_PROPS: readonly PropRowBase[] = [
   { id: 5, prop: "icon",         type: "LucideIcon",                                   dflt: "—",         desc_de: "Icon links oder rechts",               desc_en: "Icon left or right" },
   { id: 6, prop: "iconPosition", type: "left | right",                                 dflt: '"left"',    desc_de: "Position des Icons",                   desc_en: "Icon position" },
   { id: 7, prop: "dot",          type: "boolean",                                       dflt: "false",     desc_de: "Zeigt farbigen Dot statt Icon",        desc_en: "Shows colored dot instead of icon" },
-  { id: 8, prop: "className",    type: "string",                                        dflt: '""',        desc_de: "Zusätzliche Klassen",                  desc_en: "Additional classes" },
+  { id: 8, prop: "fullWidth",    type: "boolean",                                       dflt: "false",     desc_de: "Nimmt volle Breite ein (flex statt inline-flex)", desc_en: "Takes full width (flex instead of inline-flex)" },
+  { id: 9, prop: "className",    type: "string",                                        dflt: '""',        desc_de: "Zusätzliche Klassen",                  desc_en: "Additional classes" },
 ];
 
 // ── Prop Table Component ──────────────────────────────────────────────────────

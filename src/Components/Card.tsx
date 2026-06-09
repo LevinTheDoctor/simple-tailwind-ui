@@ -5,18 +5,26 @@ type CardSize = "sm" | "md" | "lg" | "full";
 type CardVariant = "default" | "elevated" | "outlined" | "ghost";
 
 type CardProps = {
-    readonly title?: string;  
-    readonly size?: CardSize;  
+    readonly title?: string;
+    readonly size?: CardSize;
     readonly variant?: CardVariant;
+    readonly fullWidth?: boolean;
     readonly className?: string;
     readonly children: ReactNode;
 } & Omit<HTMLAttributes<HTMLDivElement>, "className" | "children">;
 
-const sizeClasses: Record<CardSize, string> = {
-  sm:   "p-3 max-w-sm",
-  md:   "p-5 max-w-md",
-  lg:   "p-7 max-w-lg",
-  full: "p-5 w-full",
+const paddingClasses: Record<CardSize, string> = {
+  sm:   "p-3",
+  md:   "p-5",
+  lg:   "p-7",
+  full: "p-5",
+};
+
+const widthClasses: Record<CardSize, string> = {
+  sm:   "max-w-sm",
+  md:   "max-w-md",
+  lg:   "max-w-lg",
+  full: "w-full",
 };
 
 const variantClasses: Record<CardVariant, string> = {
@@ -28,19 +36,18 @@ const variantClasses: Record<CardVariant, string> = {
 
 export function Card({
   title,
-  size = "md",          
+  size = "md",
   variant = "default",
+  fullWidth = false,
   className = "",
   children,
-  ...rest              
+  ...rest
 }: CardProps) {
 
   const baseClasses = [
-    "rounded-2xl",
-    "transition-colors",
-    "duration-200",
-    "text-zinc-700 dark:text-zinc-300",
-    sizeClasses[size],
+    "rounded-2xl transition-colors duration-200 text-zinc-700 dark:text-zinc-300",
+    paddingClasses[size],
+    fullWidth ? "w-full" : widthClasses[size],
     variantClasses[variant],
     className,
   ].join(" ");

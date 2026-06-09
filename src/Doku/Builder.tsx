@@ -117,12 +117,13 @@ const DEFS: ComponentDef[] = [
   {
     type: "Badge", label: "Badge", group: "display",
     fields: [
-      { kind: "text",    name: "children", label: "Label",   default: "Badge" },
-      { kind: "select",  name: "color",    label: "Color",   options: ["neutral","info","success","warning","error"], default: "info" },
-      { kind: "select",  name: "variant",  label: "Variant", options: ["default","subtle","strong"], default: "subtle" },
-      { kind: "select",  name: "size",     label: "Size",    options: ["sm","md","lg"], default: "md" },
-      { kind: "icon",    name: "icon",     label: "Icon",    default: "" },
-      { kind: "boolean", name: "dot",      label: "Dot",     default: false },
+      { kind: "text",    name: "children",  label: "Label",      default: "Badge" },
+      { kind: "select",  name: "color",     label: "Color",      options: ["neutral","info","success","warning","error"], default: "info" },
+      { kind: "select",  name: "variant",   label: "Variant",    options: ["default","subtle","strong"], default: "subtle" },
+      { kind: "select",  name: "size",      label: "Size",       options: ["sm","md","lg"], default: "md" },
+      { kind: "icon",    name: "icon",      label: "Icon",       default: "" },
+      { kind: "boolean", name: "dot",       label: "Dot",        default: false },
+      { kind: "boolean", name: "fullWidth", label: "Full width", default: false },
     ],
     render: p => (
       <Badge
@@ -131,6 +132,7 @@ const DEFS: ComponentDef[] = [
         size={p.size as never}
         icon={getIcon(p.icon as string)}
         dot={p.dot as boolean}
+        fullWidth={p.fullWidth as boolean}
       >
         {p.children as string}
       </Badge>
@@ -138,36 +140,42 @@ const DEFS: ComponentDef[] = [
     code: p => {
       const icon = p.icon ? ` icon={${p.icon}}` : "";
       const dot  = p.dot ? " dot" : "";
-      return `<Badge color="${p.color}" variant="${p.variant}" size="${p.size}"${icon}${dot}>\n  ${p.children}\n</Badge>`;
+      const fw   = p.fullWidth ? " fullWidth" : "";
+      return `<Badge color="${p.color}" variant="${p.variant}" size="${p.size}"${icon}${dot}${fw}>\n  ${p.children}\n</Badge>`;
     },
   },
   {
     type: "Card", label: "Card", group: "display",
     fields: [
-      { kind: "text",   name: "title",   label: "Title",   default: "Card Title" },
-      { kind: "select", name: "variant", label: "Variant", options: ["default","elevated","outlined","ghost"], default: "default" },
-      { kind: "select", name: "size",    label: "Size",    options: ["sm","md","lg"], default: "md" },
-      { kind: "text",   name: "content", label: "Content", default: "Card content here." },
+      { kind: "text",    name: "title",     label: "Title",      default: "Card Title" },
+      { kind: "select",  name: "variant",   label: "Variant",    options: ["default","elevated","outlined","ghost"], default: "default" },
+      { kind: "select",  name: "size",      label: "Size",       options: ["sm","md","lg"], default: "md" },
+      { kind: "boolean", name: "fullWidth", label: "Full width", default: false },
+      { kind: "text",    name: "content",   label: "Content",    default: "Card content here." },
     ],
     render: p => (
-      <Card title={p.title as string} variant={p.variant as never} size={p.size as never}>
+      <Card title={p.title as string} variant={p.variant as never} size={p.size as never} fullWidth={p.fullWidth as boolean}>
         <p className="text-sm text-zinc-400">{p.content as string}</p>
       </Card>
     ),
-    code: p => `<Card title="${p.title}" variant="${p.variant}" size="${p.size}">\n  <p>${p.content}</p>\n</Card>`,
+    code: p => {
+      const fw = p.fullWidth ? "\n  fullWidth" : "";
+      return `<Card title="${p.title}" variant="${p.variant}" size="${p.size}"${fw}>\n  <p>${p.content}</p>\n</Card>`;
+    },
   },
   // ── Form ───────────────────────────────────────────────────────────────────
   {
     type: "Input", label: "Input", group: "form",
     fields: [
-      { kind: "text",    name: "title",       label: "Title",       default: "Label" },
-      { kind: "text",    name: "placeholder", label: "Placeholder", default: "Enter text…" },
-      { kind: "select",  name: "variant",     label: "Variant",     options: ["default","subtle","strong"], default: "default" },
-      { kind: "select",  name: "size",        label: "Size",        options: ["sm","md","lg","full"], default: "md" },
-      { kind: "icon",    name: "icon",        label: "Icon",        default: "" },
-      { kind: "select",  name: "iconPosition",label: "Icon pos.",   options: ["left","right"], default: "left" },
-      { kind: "boolean", name: "loading",     label: "Loading",     default: false },
-      { kind: "boolean", name: "disabled",    label: "Disabled",    default: false },
+      { kind: "text",    name: "title",        label: "Title",       default: "Label" },
+      { kind: "text",    name: "placeholder",  label: "Placeholder", default: "Enter text…" },
+      { kind: "select",  name: "variant",      label: "Variant",     options: ["default","subtle","strong"], default: "default" },
+      { kind: "select",  name: "size",         label: "Size",        options: ["sm","md","lg","full"], default: "md" },
+      { kind: "icon",    name: "icon",         label: "Icon",        default: "" },
+      { kind: "select",  name: "iconPosition", label: "Icon pos.",   options: ["left","right"], default: "left" },
+      { kind: "boolean", name: "loading",      label: "Loading",     default: false },
+      { kind: "boolean", name: "disabled",     label: "Disabled",    default: false },
+      { kind: "boolean", name: "fullWidth",    label: "Full width",  default: false },
     ],
     render: p => (
       <Input
@@ -179,23 +187,26 @@ const DEFS: ComponentDef[] = [
         iconPosition={p.iconPosition as never}
         loading={p.loading as boolean}
         disabled={p.disabled as boolean}
+        fullWidth={p.fullWidth as boolean}
       />
     ),
     code: p => {
       const icon = p.icon ? `\n  icon={${p.icon}}\n  iconPosition="${p.iconPosition}"` : "";
-      const loading  = p.loading  ? "\n  loading"  : "";
-      const disabled = p.disabled ? "\n  disabled" : "";
-      return `<Input\n  title="${p.title}"\n  placeholder="${p.placeholder}"\n  variant="${p.variant}"\n  size="${p.size}"${icon}${loading}${disabled}\n/>`;
+      const loading  = p.loading   ? "\n  loading"    : "";
+      const disabled = p.disabled  ? "\n  disabled"   : "";
+      const fw       = p.fullWidth ? "\n  fullWidth"  : "";
+      return `<Input\n  title="${p.title}"\n  placeholder="${p.placeholder}"\n  variant="${p.variant}"\n  size="${p.size}"${icon}${loading}${disabled}${fw}\n/>`;
     },
   },
   {
     type: "Dropdown", label: "Dropdown", group: "form",
     fields: [
-      { kind: "text",    name: "title",       label: "Title",       default: "Select" },
-      { kind: "text",    name: "placeholder", label: "Placeholder", default: "Choose…" },
-      { kind: "select",  name: "variant",     label: "Variant",     options: ["default","subtle","strong"], default: "default" },
-      { kind: "select",  name: "size",        label: "Size",        options: ["sm","md","lg","full"], default: "md" },
-      { kind: "boolean", name: "disabled",    label: "Disabled",    default: false },
+      { kind: "text",    name: "title",        label: "Title",       default: "Select" },
+      { kind: "text",    name: "placeholder",  label: "Placeholder", default: "Choose…" },
+      { kind: "select",  name: "variant",      label: "Variant",     options: ["default","subtle","strong"], default: "default" },
+      { kind: "select",  name: "size",         label: "Size",        options: ["sm","md","lg","full"], default: "md" },
+      { kind: "boolean", name: "disabled",     label: "Disabled",    default: false },
+      { kind: "boolean", name: "fullWidth",    label: "Full width",  default: false },
     ],
     render: p => (
       <Dropdown
@@ -204,25 +215,32 @@ const DEFS: ComponentDef[] = [
         variant={p.variant as never}
         size={p.size as never}
         disabled={p.disabled as boolean}
+        fullWidth={p.fullWidth as boolean}
         options={[{ value: "a", label: "Option A" }, { value: "b", label: "Option B" }, { value: "c", label: "Option C" }]}
       />
     ),
-    code: p =>
-      `<Dropdown\n  title="${p.title}"\n  placeholder="${p.placeholder}"\n  variant="${p.variant}"\n  size="${p.size}"\n  options={[\n    { value: "a", label: "Option A" },\n    { value: "b", label: "Option B" },\n  ]}\n  value={value}\n  onChange={setValue}\n/>`,
+    code: p => {
+      const fw = p.fullWidth ? "\n  fullWidth" : "";
+      return `<Dropdown\n  title="${p.title}"\n  placeholder="${p.placeholder}"\n  variant="${p.variant}"\n  size="${p.size}"${fw}\n  options={[\n    { value: "a", label: "Option A" },\n    { value: "b", label: "Option B" },\n  ]}\n  value={value}\n  onChange={setValue}\n/>`;
+    },
   },
   {
     type: "TitelBorder", label: "TitelBorder", group: "form",
     fields: [
-      { kind: "text",   name: "title",   label: "Title",   default: "Group Title" },
-      { kind: "select", name: "variant", label: "Variant", options: ["default","subtle","strong"], default: "default" },
-      { kind: "select", name: "size",    label: "Size",    options: ["sm","md","lg","full"], default: "md" },
+      { kind: "text",    name: "title",     label: "Title",      default: "Group Title" },
+      { kind: "select",  name: "variant",   label: "Variant",    options: ["default","subtle","strong"], default: "default" },
+      { kind: "select",  name: "size",      label: "Size",       options: ["sm","md","lg","full"], default: "md" },
+      { kind: "boolean", name: "fullWidth", label: "Full width", default: false },
     ],
     render: p => (
-      <TitelBorder title={p.title as string} variant={p.variant as never} size={p.size as never}>
+      <TitelBorder title={p.title as string} variant={p.variant as never} size={p.size as never} fullWidth={p.fullWidth as boolean}>
         <p className="text-sm text-zinc-400">Children go here.</p>
       </TitelBorder>
     ),
-    code: p => `<TitelBorder title="${p.title}" variant="${p.variant}" size="${p.size}">\n  {/* children */}\n</TitelBorder>`,
+    code: p => {
+      const fw = p.fullWidth ? "\n  fullWidth" : "";
+      return `<TitelBorder title="${p.title}" variant="${p.variant}" size="${p.size}"${fw}>\n  {/* children */}\n</TitelBorder>`;
+    },
   },
   // ── Layout ─────────────────────────────────────────────────────────────────
   {
@@ -231,10 +249,11 @@ const DEFS: ComponentDef[] = [
       { kind: "text",    name: "title",       label: "Title",        default: "Accordion" },
       { kind: "text",    name: "content",     label: "Content",      default: "Expanded content here." },
       { kind: "select",  name: "variant",     label: "Variant",      options: ["default","subtle","strong"], default: "default" },
-      { kind: "select",  name: "size",        label: "Size",         options: ["sm","md","lg","full"], default: "full" },
+      { kind: "select",  name: "size",        label: "Size",         options: ["sm","md","lg"], default: "md" },
       { kind: "icon",    name: "icon",        label: "Icon",         default: "" },
       { kind: "boolean", name: "defaultOpen", label: "Default open", default: false },
       { kind: "boolean", name: "disabled",    label: "Disabled",     default: false },
+      { kind: "boolean", name: "fullWidth",   label: "Full width",   default: false },
     ],
     render: p => (
       <Accordion
@@ -244,15 +263,17 @@ const DEFS: ComponentDef[] = [
         icon={getIcon(p.icon as string)}
         defaultOpen={p.defaultOpen as boolean}
         disabled={p.disabled as boolean}
+        fullWidth={p.fullWidth as boolean}
       >
         <p className="text-sm text-zinc-400">{p.content as string}</p>
       </Accordion>
     ),
     code: p => {
-      const icon    = p.icon        ? `\n  icon={${p.icon}}`  : "";
-      const open    = p.defaultOpen ? "\n  defaultOpen"       : "";
-      const dis     = p.disabled    ? "\n  disabled"          : "";
-      return `<Accordion\n  title="${p.title}"\n  variant="${p.variant}"\n  size="${p.size}"${icon}${open}${dis}\n>\n  <p>${p.content}</p>\n</Accordion>`;
+      const icon = p.icon        ? `\n  icon={${p.icon}}`  : "";
+      const open = p.defaultOpen ? "\n  defaultOpen"       : "";
+      const dis  = p.disabled    ? "\n  disabled"          : "";
+      const fw   = p.fullWidth   ? "\n  fullWidth"         : "";
+      return `<Accordion\n  title="${p.title}"\n  variant="${p.variant}"\n  size="${p.size}"${icon}${open}${dis}${fw}\n>\n  <p>${p.content}</p>\n</Accordion>`;
     },
   },
   // ── Nav ────────────────────────────────────────────────────────────────────
@@ -314,7 +335,8 @@ const DEFS: ComponentDef[] = [
     fields: [
       { kind: "select",  name: "orientation", label: "Orientation", options: ["horizontal","vertical"], default: "horizontal" },
       { kind: "select",  name: "variant",     label: "Variant",     options: ["default","subtle","strong"], default: "default" },
-      { kind: "select",  name: "size",        label: "Size",        options: ["sm","md","lg","full"], default: "full" },
+      { kind: "select",  name: "size",        label: "Size",        options: ["sm","md","lg"], default: "md" },
+      { kind: "boolean", name: "fullWidth",   label: "Full width",  default: false },
     ],
     render: p => {
       const items = [
@@ -329,6 +351,7 @@ const DEFS: ComponentDef[] = [
           orientation={p.orientation as never}
           variant={p.variant as never}
           size={p.size as never}
+          fullWidth={p.fullWidth as boolean}
         >
           <TabPanel id="a"><p className="text-sm text-zinc-400 p-2">Overview content</p></TabPanel>
           <TabPanel id="b"><p className="text-sm text-zinc-400 p-2">Settings content</p></TabPanel>
@@ -336,8 +359,10 @@ const DEFS: ComponentDef[] = [
         </Tabs>
       );
     },
-    code: p =>
-      `const tabs = [\n  { id: "a", label: "Overview" },\n  { id: "b", label: "Settings" },\n  { id: "c", label: "Profile"  },\n];\n\n<Tabs\n  items={tabs}\n  defaultActiveId="a"\n  orientation="${p.orientation}"\n  variant="${p.variant}"\n  size="${p.size}"\n>\n  <TabPanel id="a">Overview</TabPanel>\n  <TabPanel id="b">Settings</TabPanel>\n  <TabPanel id="c">Profile</TabPanel>\n</Tabs>`,
+    code: p => {
+      const fw = p.fullWidth ? "\n  fullWidth" : "";
+      return `const tabs = [\n  { id: "a", label: "Overview" },\n  { id: "b", label: "Settings" },\n  { id: "c", label: "Profile"  },\n];\n\n<Tabs\n  items={tabs}\n  defaultActiveId="a"\n  orientation="${p.orientation}"\n  variant="${p.variant}"\n  size="${p.size}"${fw}\n>\n  <TabPanel id="a">Overview</TabPanel>\n  <TabPanel id="b">Settings</TabPanel>\n  <TabPanel id="c">Profile</TabPanel>\n</Tabs>`;
+    },
   },
 ];
 

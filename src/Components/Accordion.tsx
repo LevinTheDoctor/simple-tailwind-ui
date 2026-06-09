@@ -52,6 +52,7 @@ type AccordionProps = {
   readonly variant?:     AccordionVariant;
   readonly loading?:     boolean;
   readonly disabled?:    boolean;
+  readonly fullWidth?:   boolean;
   readonly className?:   string;
   readonly children?:    ReactNode;
 } & Omit<HTMLAttributes<HTMLDivElement>, "className" | "children">;
@@ -106,6 +107,7 @@ export function Accordion({
   variant   = "default",
   loading   = false,
   disabled  = false,
+  fullWidth = false,
   className = "",
   children,
   ...rest
@@ -129,7 +131,7 @@ export function Accordion({
 
   const rootClasses = [
     "rounded-xl overflow-hidden transition-colors duration-200",
-    sizeClasses[size],
+    fullWidth ? "w-full" : sizeClasses[size],
     variantClasses[variant],
     isDisabled ? "opacity-50" : "",
     className,

@@ -96,7 +96,7 @@ import {
 <Input title="Email" variant="subtle" loading />
 ```
 
-**Props:** `title`, `variant` (default | subtle | strong), `icon`, `iconPosition` (left | right), `loading`, `disabled`, `placeholder`, `value`, `onChange`
+**Props:** `title`, `variant` (default | subtle | strong), `size` (sm | md | lg | full), `icon`, `iconPosition` (left | right), `loading`, `disabled`, `fullWidth`, `placeholder`, `value`, `onChange`
 
 ---
 
@@ -111,7 +111,7 @@ import {
 />
 ```
 
-**Props:** `title`, `options`, `variant` (default | subtle | strong), `icon`, `loading`, `disabled`, `value`, `onChange`
+**Props:** `title`, `options`, `variant` (default | subtle | strong), `size` (sm | md | lg | full), `icon`, `loading`, `disabled`, `fullWidth`, `value`, `onChange`
 
 ---
 
@@ -128,7 +128,7 @@ const options = [
 <ComboBox title="Tags" options={options} multiple maxVisible={2} />
 ```
 
-**Props:** `title`, `options`, `multiple`, `maxVisible`, `loading`, `disabled`
+**Props:** `title`, `options`, `multiple`, `maxVisible`, `variant`, `icon`, `loading`, `disabled`, `fullWidth`, `value`, `onChange`
 
 ---
 
@@ -139,7 +139,7 @@ const options = [
 <DatePicker title="Range" minDate={new Date()} maxDate={new Date(2025, 11, 31)} />
 ```
 
-**Props:** `title`, `displayFormat` (de | us | iso | long), `outputFormat` (date | iso | de | us | timestamp), `minDate`, `maxDate`, `variant`, `loading`, `disabled`, `onChange`
+**Props:** `title`, `displayFormat` (de | us | iso | long), `outputFormat` (date | iso | de | us | timestamp), `minDate`, `maxDate`, `variant`, `icon`, `loading`, `disabled`, `fullWidth`, `onChange`
 
 ---
 
@@ -151,7 +151,7 @@ const options = [
 </Card>
 ```
 
-**Props:** `title`, `variant` (default | elevated | outlined | ghost), `size` (sm | md | lg), `className`, `children`
+**Props:** `title`, `variant` (default | elevated | outlined | ghost), `size` (sm | md | lg), `fullWidth`, `className`, `children`
 
 ---
 
@@ -163,7 +163,7 @@ const options = [
 </TitelBorder>
 ```
 
-**Props:** `title`, `variant` (default | subtle | strong), `size` (sm | md | lg | full), `className`, `children`
+**Props:** `title`, `variant` (default | subtle | strong), `size` (sm | md | lg), `fullWidth`, `className`, `children`
 
 ---
 
@@ -256,7 +256,7 @@ const [active, setActive] = useState("home");
 </Accordion>
 ```
 
-**Props:** `title`, `defaultOpen`, `open`, `onToggle`, `icon`, `size` (sm | md | lg | full), `variant` (default | subtle | strong), `loading`, `disabled`, `children`
+**Props:** `title`, `defaultOpen`, `open`, `onToggle`, `icon`, `size` (sm | md | lg), `variant` (default | subtle | strong), `loading`, `disabled`, `fullWidth`, `children`
 
 ---
 
@@ -352,7 +352,7 @@ const items = [
 </Tabs>
 ```
 
-**Props:** `items`, `activeId`, `defaultActiveId`, `onChange`, `size` (sm | md | lg | full), `variant` (default | subtle | strong), `orientation` (horizontal | vertical), `children`
+**Props:** `items`, `activeId`, `defaultActiveId`, `onChange`, `size` (sm | md | lg), `variant` (default | subtle | strong), `orientation` (horizontal | vertical), `fullWidth`, `children`
 
 ---
 
@@ -365,7 +365,7 @@ const items = [
 <Badge color="error" variant="subtle">Failed</Badge>
 ```
 
-**Props:** `color` (neutral | info | success | warning | error), `variant` (default | subtle | strong), `size` (sm | md | lg), `icon`, `iconPosition` (left | right), `dot`, `className`, `children`
+**Props:** `color` (neutral | info | success | warning | error), `variant` (default | subtle | strong), `size` (sm | md | lg), `icon`, `iconPosition` (left | right), `dot`, `fullWidth`, `className`, `children`
 
 ---
 

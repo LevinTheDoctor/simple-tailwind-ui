@@ -18,6 +18,7 @@ type ComboBoxBase = {
   readonly icon?: LucideIcon;
   readonly loading?: boolean;
   readonly disabled?: boolean;
+  readonly fullWidth?: boolean;
   readonly maxVisible?: number;
   readonly placeholder?: string;
   readonly className?: string;
@@ -97,6 +98,7 @@ export function ComboBox(props: ComboBoxProps) {
     icon: Icon,
     loading = false,
     disabled = false,
+    fullWidth = false,
     maxVisible,
     placeholder = "Auswaehlen...",
     className = "",
@@ -197,7 +199,7 @@ export function ComboBox(props: ComboBoxProps) {
   ].join(" ");
 
   return (
-    <TitelBorder title={title} size={size} variant={variant} className={className}>
+    <TitelBorder title={title} size={size} variant={variant} fullWidth={fullWidth} className={className}>
       <div ref={containerRef} className="relative">
 
         {/* Left icon */}

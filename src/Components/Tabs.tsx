@@ -20,6 +20,7 @@ type TabsProps = {
   readonly size?:             TabsSize;
   readonly variant?:          TabsVariant;
   readonly orientation?:      TabsOrientation;
+  readonly fullWidth?:        boolean;
   readonly children?:         ReactNode;
   readonly className?:        string;
 };
@@ -89,6 +90,7 @@ export function Tabs({
   size        = "md",
   variant     = "default",
   orientation = "horizontal",
+  fullWidth   = false,
   children,
   className   = "",
 }: TabsProps) {
@@ -118,7 +120,7 @@ export function Tabs({
       className={[
         "flex",
         isHorizontal ? "flex-col" : "flex-row gap-4",
-        sizeClasses[size],
+        fullWidth ? "w-full" : sizeClasses[size],
         className,
       ].join(" ")}
     >

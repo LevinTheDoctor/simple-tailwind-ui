@@ -8,15 +8,23 @@ type TitelBorderProps = {
   readonly title: string;
   readonly size?: TitelBorderSize;
   readonly variant?: TitelBorderVariant;
+  readonly fullWidth?: boolean;
   readonly className?: string;
   readonly children: ReactNode;
 } & Omit<HTMLAttributes<HTMLFieldSetElement>, "className" | "children">;
 
-const sizeClasses: Record<TitelBorderSize, string> = {
-  sm:   "px-2 pb-2 max-w-sm",
-  md:   "px-2 pb-2 max-w-md",
-  lg:   "px-3 pb-3 max-w-lg",
-  full: "px-2 pb-2 w-full",
+const paddingClasses: Record<TitelBorderSize, string> = {
+  sm:   "px-2 pb-2",
+  md:   "px-2 pb-2",
+  lg:   "px-3 pb-3",
+  full: "px-2 pb-2",
+};
+
+const widthClasses: Record<TitelBorderSize, string> = {
+  sm:   "max-w-sm",
+  md:   "max-w-md",
+  lg:   "max-w-lg",
+  full: "w-full",
 };
 
 const variantClasses: Record<TitelBorderVariant, string> = {
@@ -35,15 +43,15 @@ export function TitelBorder({
   title,
   size = "md",
   variant = "default",
+  fullWidth = false,
   className = "",
   children,
   ...rest
 }: TitelBorderProps) {
   const fieldsetClasses = [
-    "rounded-xl",
-    "transition-colors",
-    "duration-200",
-    sizeClasses[size],
+    "rounded-xl transition-colors duration-200",
+    paddingClasses[size],
+    fullWidth ? "w-full" : widthClasses[size],
     variantClasses[variant],
     className,
   ].join(" ");

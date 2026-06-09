@@ -85,7 +85,7 @@ import {
 </Button>
 ```
 
-**Props:** `color` (primary | secondary | success | danger | warning | neutral), `variant` (solid | outline | ghost | link), `size` (xs | sm | md | lg | xl), `icon`, `iconPosition` (left | right | only), `isLoading`, `fullWidth`, `disabled`
+**Props:** `color` (primary | secondary | success | danger | warning | neutral), `variant` (solid | outline | ghost), `size` (xs | sm | md | lg | xl), `icon`, `iconPosition` (left | right | only), `isLoading`, `fullWidth`, `disabled`
 
 ---
 
@@ -107,11 +107,11 @@ import {
   title="Language"
   options={[{ value: "de", label: "Deutsch" }, { value: "en", label: "English" }]}
   value={val}
-  onChange={e => setVal(e.target.value)}
+  onChange={setVal}
 />
 ```
 
-**Props:** `title`, `options`, `variant` (default | subtle | strong), `size` (sm | md | lg | full), `icon`, `loading`, `disabled`, `fullWidth`, `value`, `onChange`
+**Props:** `title`, `options`, `variant` (default | subtle | strong), `size` (sm | md | lg | full), `icon`, `loading`, `disabled`, `fullWidth`, `value`, `onChange` — `onChange` receives the selected value string directly (not an event)
 
 ---
 

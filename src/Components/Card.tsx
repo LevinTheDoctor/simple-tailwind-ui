@@ -27,6 +27,8 @@ const widthClasses: Record<CardSize, string> = {
   full: "w-full",
 };
 
+const fullWidthPadding = "p-4 sm:p-5 lg:p-6";
+
 const variantClasses: Record<CardVariant, string> = {
   default:  "bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm",
   elevated: "bg-white dark:bg-zinc-900 shadow-lg dark:shadow-zinc-950",
@@ -46,7 +48,7 @@ export function Card({
 
   const baseClasses = [
     "rounded-2xl transition-colors duration-200 text-zinc-700 dark:text-zinc-300",
-    paddingClasses[size],
+    fullWidth ? fullWidthPadding : paddingClasses[size],
     fullWidth ? "w-full" : widthClasses[size],
     variantClasses[variant],
     className,

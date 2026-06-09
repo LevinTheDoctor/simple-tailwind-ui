@@ -102,7 +102,7 @@ export function Tabs({
     if (controlledActiveId !== undefined) setInternalActiveId(controlledActiveId);
   }, [controlledActiveId]);
 
-  const activeId = controlledActiveId !== undefined ? controlledActiveId : internalActiveId;
+  const activeId = controlledActiveId ?? internalActiveId;
 
   const handleSelect = (id: string) => {
     setInternalActiveId(id);
@@ -150,7 +150,7 @@ export function Tabs({
                 "relative flex items-center transition-colors duration-200",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset",
                 "focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-500",
-                tabSizeClasses[size],
+                fullWidth && isHorizontal ? "flex-1 justify-center px-3 sm:px-4 py-2 sm:py-2.5 text-sm gap-2" : tabSizeClasses[size],
                 isActive
                   ? ["font-semibold", variantActiveTextClasses[variant]].join(" ")
                   : "text-zinc-500 dark:text-zinc-400 font-medium",

@@ -27,6 +27,8 @@ const widthClasses: Record<TitelBorderSize, string> = {
   full: "w-full",
 };
 
+const fullWidthPadding = "px-3 sm:px-4 lg:px-5 pb-3 sm:pb-4 lg:pb-5";
+
 const variantClasses: Record<TitelBorderVariant, string> = {
   default: "border border-zinc-300 dark:border-zinc-700",
   subtle:  "border border-zinc-200 dark:border-zinc-800",
@@ -50,7 +52,7 @@ export function TitelBorder({
 }: TitelBorderProps) {
   const fieldsetClasses = [
     "rounded-xl transition-colors duration-200",
-    paddingClasses[size],
+    fullWidth ? fullWidthPadding : paddingClasses[size],
     fullWidth ? "w-full" : widthClasses[size],
     variantClasses[variant],
     className,

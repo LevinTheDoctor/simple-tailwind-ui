@@ -78,6 +78,9 @@ const contentSizeClasses: Record<AccordionSize, string> = {
   full: "px-4 pb-4 pt-1 text-sm",
 };
 
+const fullWidthHeaderClasses  = "px-4 sm:px-5 lg:px-6 py-2.5 sm:py-3 text-sm sm:text-base";
+const fullWidthContentClasses = "px-4 sm:px-5 lg:px-6 pb-4 sm:pb-5 lg:pb-6 pt-1 sm:pt-2 text-sm sm:text-base";
+
 const iconSizeClasses: Record<AccordionSize, string> = {
   sm:   "w-3.5 h-3.5",
   md:   "w-4 h-4",
@@ -118,7 +121,7 @@ export function Accordion({
     if (controlledOpen !== undefined) setInternalOpen(controlledOpen);
   }, [controlledOpen]);
 
-  const isOpen      = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const isOpen      = controlledOpen ?? internalOpen;
   const isDisabled  = disabled || loading;
   const IndicatorIcon = loading ? Loader2 : (CustomIcon ?? ChevronDown);
 
@@ -142,7 +145,7 @@ export function Accordion({
     "text-zinc-900 dark:text-zinc-100 font-medium",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset",
     "focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-500",
-    headerSizeClasses[size],
+    fullWidth ? fullWidthHeaderClasses : headerSizeClasses[size],
     isDisabled ? "cursor-not-allowed" : "cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800",
   ].join(" ");
 
@@ -182,7 +185,7 @@ export function Accordion({
           <div
             className={[
               "text-zinc-700 dark:text-zinc-300",
-              contentSizeClasses[size],
+              fullWidth ? fullWidthContentClasses : contentSizeClasses[size],
             ].join(" ")}
           >
             {children}

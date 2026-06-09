@@ -90,10 +90,42 @@ import { Button, Card, Input, Modal } from "@levin-the-doctor/simple-tailwind-ui
 ---
 
 ### DatePicker
-`label`, `value`, `onChange`, `displayFormat`, `outputFormat` (ISO | DD.MM.YYYY | …), `minDate`, `maxDate`
+
+| Prop | Typ | Default | Beschreibung |
+|---|---|---|---|
+| `title` | `string` | — | Label / Feldbezeichnung (required) |
+| `size` | `"sm" \| "md" \| "lg" \| "full"` | `"md"` | Größe des Triggers |
+| `variant` | `"default" \| "subtle" \| "strong"` | `"default"` | Visueller Stil |
+| `icon` | `LucideIcon` | `Calendar` | Eigenes Icon links im Trigger |
+| `loading` | `boolean` | `false` | Zeigt Lade-Spinner, blockiert Interaktion |
+| `disabled` | `boolean` | `false` | Deaktiviert den Picker |
+| `fullWidth` | `boolean` | `false` | Volle Breite des Containers |
+| `value` | `Date \| null` | — | Kontrollierter Wert |
+| `onChange` | `(v: Date \| string \| number) => void` | — | Callback bei Datumsauswahl |
+| `displayFormat` | `"de" \| "us" \| "iso" \| "long"` | `"de"` | Vordefiniertes Anzeigeformat im Trigger |
+| `customDisplayFormat` | `string` | — | Freies Anzeigeformat, überschreibt `displayFormat`. Tokens: `DD` `MM` `YYYY` `D` `M` |
+| `outputFormat` | `"date" \| "iso" \| "de" \| "us" \| "timestamp"` | `"date"` | Vordefiniertes Format für `onChange` |
+| `customOutputFormat` | `string` | — | Freies Ausgabeformat, überschreibt `outputFormat`. Gleiche Tokens wie `customDisplayFormat` |
+| `minDate` | `Date` | — | Frühestes wählbares Datum |
+| `maxDate` | `Date` | — | Spätestes wählbares Datum |
+| `placeholder` | `string` | `"Datum waehlen..."` | Platzhaltertext wenn kein Datum gewählt |
+| `className` | `string` | `""` | Zusätzliche CSS-Klassen |
 
 ```tsx
-<DatePicker label="Start date" value={date} onChange={setDate} outputFormat="ISO" />
+// Standard
+<DatePicker title="Startdatum" value={date} onChange={setDate} />
+
+// Vordefinierte Formate
+<DatePicker title="Datum" displayFormat="long" outputFormat="iso" value={date} onChange={setDate} />
+
+// Eigene Formate
+<DatePicker
+  title="Datum"
+  customDisplayFormat="DD.MM.YYYY"
+  customOutputFormat="YYYY/MM/DD"
+  value={date}
+  onChange={setDate}
+/>
 ```
 
 ---

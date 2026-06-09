@@ -20,7 +20,11 @@ type DatePickerProps = {
   readonly disabled?: boolean;
   readonly fullWidth?: boolean;
   readonly displayFormat?: DisplayFormat;
+  /** Freies Anzeigeformat, überschreibt displayFormat. Tokens: DD MM YYYY D M */
+  readonly customDisplayFormat?: string;
   readonly outputFormat?: OutputFormat;
+  /** Freies Ausgabeformat für onChange, überschreibt outputFormat. Tokens: DD MM YYYY D M */
+  readonly customOutputFormat?: string;
   readonly value?: Date | null;
   readonly onChange?: (value: Date | string | number) => void;
   readonly minDate?: Date;
@@ -80,6 +84,18 @@ const MONTH_NAMES = [
 
 const DAY_LABELS = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 
+function applyFormatString(date: Date, fmt: string): string {
+  const d = date.getDate();
+  const m = date.getMonth() + 1;
+  const y = date.getFullYear();
+  return fmt
+    .replace("YYYY", String(y))
+    .replace("MM",   String(m).padStart(2, "0"))
+    .replace("DD",   String(d).padStart(2, "0"))
+    .replace("M",    String(m))
+    .replace("D",    String(d));
+}
+
 function formatDisplay(date: Date, format: DisplayFormat): string {
   const d = String(date.getDate()).padStart(2, "0");
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -136,7 +152,9 @@ export function DatePicker({
   disabled = false,
   fullWidth = false,
   displayFormat = "de",
+  customDisplayFormat,
   outputFormat = "date",
+  customOutputFormat,
   value,
   onChange,
   minDate,
@@ -187,13 +205,21 @@ export function DatePicker({
   const handleSelectDate = (date: Date) => {
     if (isDateDisabled(date)) return;
     setSelected(date);
-    onChange?.(formatOutput(date, outputFormat));
+    const out = customOutputFormat
+      ? applyFormatString(date, customOutputFormat)
+      : formatOutput(date, outputFormat);
+    onChange?.(out);
     setOpen(false);
   };
 
   const ActiveIcon  = loading ? Loader2 : (Icon ?? Calendar);
   const isDisabled  = disabled || loading;
-  const triggerLabel = selected ? formatDisplay(selected, displayFormat) : null;
+  let triggerLabel: string | null = null;
+  if (selected) {
+    triggerLabel = customDisplayFormat
+      ? applyFormatString(selected, customDisplayFormat)
+      : formatDisplay(selected, displayFormat);
+  }
 
   const triggerClasses = [
     "w-full rounded-lg flex items-center transition-colors duration-200 text-left",

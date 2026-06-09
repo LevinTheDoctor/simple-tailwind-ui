@@ -301,11 +301,18 @@ const NAVBAR_PROPS: readonly PropRowBase[] = [
   { id: 4,  prop: "orientation", type: "horizontal | vertical",             dflt: '"horizontal"',   desc_de: "Ausrichtung der Leiste",                     desc_en: "Bar orientation" },
   { id: 5,  prop: "indicator",   type: "gradient-line | pill | dot | none", dflt: '"gradient-line"', desc_de: "Aktiv-Indikator-Stil",                      desc_en: "Active indicator style" },
   { id: 6,  prop: "logo",        type: "ReactNode",                         dflt: "—",              desc_de: "Optionales Logo links in der Leiste",        desc_en: "Optional logo on the left" },
-  { id: 7,  prop: "trailing",    type: "ReactNode",                         dflt: "—",              desc_de: "Inhalt am rechten / unteren Ende",           desc_en: "Content at the right / bottom end" },
-  { id: 8,  prop: "background",  type: "string",                            dflt: "—",              desc_de: "Tailwind-Klasse oder CSS-Wert für Hintergrund", desc_en: "Tailwind class or CSS for background" },
-  { id: 9,  prop: "size",        type: "sm | md | lg",                      dflt: '"md"',           desc_de: "Größe der Items",                            desc_en: "Item size" },
-  { id: 10, prop: "fullWidth",   type: "boolean",                           dflt: "false",          desc_de: "Leiste nimmt volle Breite ein",              desc_en: "Bar takes full width" },
-  { id: 11, prop: "sticky",      type: "boolean",                           dflt: "false",          desc_de: "Klebt am oberen Rand beim Scrollen",         desc_en: "Sticks at top while scrolling" },
+  { id: 7,  prop: "trailing",          type: "ReactNode", dflt: "—",                                          desc_de: "Inhalt am rechten / unteren Ende",                            desc_en: "Content at the right / bottom end" },
+  { id: 8,  prop: "trailingClassName", type: "string",    dflt: "—",                                          desc_de: "Zusätzliche Klassen für den Trailing-Wrapper (Höhe, Padding)", desc_en: "Extra classes for the trailing wrapper (height, padding)" },
+  { id: 9,  prop: "background",        type: "string",    dflt: "—",                                          desc_de: "Tailwind-Klasse oder CSS-Wert für Hintergrund",               desc_en: "Tailwind class or CSS for background" },
+  { id: 10, prop: "size",              type: "sm | md | lg", dflt: '"md"',                                    desc_de: "Größe der Items",                                             desc_en: "Item size" },
+  { id: 11, prop: "fullWidth",         type: "boolean",   dflt: "false",                                      desc_de: "Leiste nimmt volle Breite ein",                               desc_en: "Bar takes full width" },
+  { id: 12, prop: "sticky",            type: "boolean",   dflt: "false",                                      desc_de: "Klebt am oberen Rand beim Scrollen",                          desc_en: "Sticks at top while scrolling" },
+  { id: 13, prop: "indicatorGradient",  type: "string",                        dflt: '"from-indigo-500 to-violet-600"',   desc_de: "Tailwind-Gradient-Klassen für den Aktiv-Indikator",         desc_en: "Tailwind gradient classes for the active indicator" },
+  { id: 14, prop: "indicatorLineSize", type: "px | 0.5 | 1 | 1.5 | 2",       dflt: '"0.5"',                             desc_de: "Linienstärke des gradient-line Indikators",                desc_en: "Thickness of the gradient-line indicator" },
+  { id: 15, prop: "dotSize",           type: "sm | md | lg",                  dflt: '"md"',                              desc_de: "Größe des dot-Indikators",                                 desc_en: "Size of the dot indicator" },
+  { id: 16, prop: "activeTextColor",   type: "string",                        dflt: '"text-zinc-900 dark:text-zinc-100"',desc_de: "Textfarbe des aktiven Items",                              desc_en: "Text color of the active item" },
+  { id: 17, prop: "inactiveTextColor", type: "string",                        dflt: '"text-zinc-500 dark:text-zinc-400"',desc_de: "Textfarbe der inaktiven Items",                            desc_en: "Text color of inactive items" },
+  { id: 18, prop: "activeFontWeight",  type: "string",                        dflt: '"font-medium"',                     desc_de: "Schriftgewicht des aktiven Items (Tailwind font-Klasse)", desc_en: "Font weight of the active item (Tailwind font class)" },
 ];
 
 const ACCORDION_PROPS: readonly PropRowBase[] = [

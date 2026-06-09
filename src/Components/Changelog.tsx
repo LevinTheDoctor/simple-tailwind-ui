@@ -56,9 +56,7 @@ export function Changelog({program, version, date, path}: ChangelogProps) {
                 showCloseButton={true}
                 size="full"
             >
-                <div className="max-h-[80vh] overflow-y-auto">
-                    <ReactMarkdown>{markdownText}</ReactMarkdown>
-                </div>
+                <ReactMarkdown>{markdownText}</ReactMarkdown>
             </Modal>
         </>
     );

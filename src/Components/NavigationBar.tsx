@@ -3,10 +3,12 @@ import { type LucideIcon } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export type NavBarSize        = "sm" | "md" | "lg";
-export type NavBarVariant     = "default" | "subtle" | "strong";
-export type NavBarOrientation = "horizontal" | "vertical";
-export type NavBarIndicator   = "gradient-line" | "pill" | "dot" | "none";
+export type NavBarSize             = "sm" | "md" | "lg";
+export type NavBarVariant          = "default" | "subtle" | "strong";
+export type NavBarOrientation      = "horizontal" | "vertical";
+export type NavBarIndicator        = "gradient-line" | "pill" | "dot" | "none";
+export type NavBarIndicatorLineSize = "px" | "0.5" | "1" | "1.5" | "2";
+export type NavBarDotSize          = "sm" | "md" | "lg";
 
 export type NavBarItem = {
   readonly id:        string;
@@ -18,19 +20,26 @@ export type NavBarItem = {
 };
 
 export type NavigationBarProps = {
-  readonly items:        ReadonlyArray<NavBarItem>;
-  readonly activeId?:    string;
-  readonly onSelect?:    (id: string) => void;
-  readonly orientation?: NavBarOrientation;
-  readonly logo?:        ReactNode;
-  readonly background?:  string;
-  readonly size?:        NavBarSize;
-  readonly variant?:     NavBarVariant;
-  readonly indicator?:   NavBarIndicator;
-  readonly trailing?:    ReactNode;
-  readonly fullWidth?:   boolean;
-  readonly sticky?:      boolean;
-  readonly className?:   string;
+  readonly items:                ReadonlyArray<NavBarItem>;
+  readonly activeId?:            string;
+  readonly onSelect?:            (id: string) => void;
+  readonly orientation?:         NavBarOrientation;
+  readonly logo?:                ReactNode;
+  readonly background?:          string;
+  readonly size?:                NavBarSize;
+  readonly variant?:             NavBarVariant;
+  readonly indicator?:           NavBarIndicator;
+  readonly trailing?:            ReactNode;
+  readonly trailingClassName?:   string;
+  readonly indicatorGradient?:   string;
+  readonly indicatorLineSize?:   NavBarIndicatorLineSize;
+  readonly dotSize?:             NavBarDotSize;
+  readonly activeTextColor?:     string;
+  readonly inactiveTextColor?:   string;
+  readonly activeFontWeight?:    string;
+  readonly fullWidth?:           boolean;
+  readonly sticky?:              boolean;
+  readonly className?:           string;
 } & Omit<HTMLAttributes<HTMLElement>, "className" | "children" | "onSelect">;
 
 // ── Maps ──────────────────────────────────────────────────────────────────────
@@ -72,21 +81,50 @@ const variantClasses: Record<NavBarVariant, string> = {
   strong:  "border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900",
 };
 
+const indicatorLineSizeH: Record<NavBarIndicatorLineSize, string> = {
+  "px":  "h-px",
+  "0.5": "h-0.5",
+  "1":   "h-1",
+  "1.5": "h-1.5",
+  "2":   "h-2",
+};
+
+const indicatorLineSizeV: Record<NavBarIndicatorLineSize, string> = {
+  "px":  "w-px",
+  "0.5": "w-0.5",
+  "1":   "w-1",
+  "1.5": "w-1.5",
+  "2":   "w-2",
+};
+
+const dotSizeClasses: Record<NavBarDotSize, string> = {
+  sm: "w-1   h-1",
+  md: "w-1.5 h-1.5",
+  lg: "w-2   h-2",
+};
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function NavigationBar({
   items,
   activeId,
   onSelect,
-  orientation = "horizontal",
+  orientation       = "horizontal",
   logo,
   background,
-  size      = "md",
-  variant   = "default",
-  indicator = "gradient-line",
+  size              = "md",
+  variant           = "default",
+  indicator         = "gradient-line",
   trailing,
-  fullWidth = false,
-  sticky    = false,
+  trailingClassName,
+  indicatorGradient  = "from-indigo-500 to-violet-600",
+  indicatorLineSize  = "0.5",
+  dotSize            = "md",
+  activeTextColor    = "text-zinc-900 dark:text-zinc-100",
+  inactiveTextColor  = "text-zinc-500 dark:text-zinc-400",
+  activeFontWeight   = "font-medium",
+  fullWidth          = false,
+  sticky            = false,
   className,
   ...rest
 }: NavigationBarProps) {
@@ -148,17 +186,22 @@ export function NavigationBar({
           const Icon       = item.icon;
           const isPill     = indicator === "pill";
 
+          let stateClasses: string;
+          if (isPill) {
+            stateClasses = isActive
+              ? `bg-zinc-100 dark:bg-zinc-800 ${activeTextColor} ${activeFontWeight}`
+              : `${inactiveTextColor} hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-300`;
+          } else {
+            stateClasses = isActive
+              ? `${activeTextColor} ${activeFontWeight}`
+              : `${inactiveTextColor} hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-700 dark:hover:text-zinc-300`;
+          }
+
           const itemClasses = [
             "relative flex items-center overflow-hidden rounded-lg transition-colors duration-200 select-none whitespace-nowrap",
             itemSizeClasses[size],
             isDisabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer",
-            isPill
-              ? isActive
-                ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-medium"
-                : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-300"
-              : isActive
-                ? "text-zinc-900 dark:text-zinc-100 font-medium"
-                : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-700 dark:hover:text-zinc-300",
+            stateClasses,
           ].join(" ");
 
           const handleClick = () => { if (!isDisabled) onSelect?.(item.id); };
@@ -179,10 +222,10 @@ export function NavigationBar({
                 <span
                   aria-hidden
                   className={[
-                    "absolute bg-gradient-to-r from-indigo-500 to-violet-600 transition-all duration-200",
+                    `absolute bg-gradient-to-r ${indicatorGradient} transition-all duration-200`,
                     isH
-                      ? "bottom-0 left-0 right-0 h-0.5 origin-left"
-                      : "top-0 left-0 bottom-0 w-0.5 origin-top",
+                      ? `bottom-0 left-0 right-0 ${indicatorLineSizeH[indicatorLineSize]} origin-left`
+                      : `top-0 left-0 bottom-0 ${indicatorLineSizeV[indicatorLineSize]} origin-top`,
                     isH
                       ? (isActive ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0")
                       : (isActive ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"),
@@ -195,10 +238,11 @@ export function NavigationBar({
                 <span
                   aria-hidden
                   className={[
-                    "absolute rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 transition-all duration-200",
+                    `absolute rounded-full bg-gradient-to-r ${indicatorGradient} transition-all duration-200`,
+                    dotSizeClasses[dotSize],
                     isH
-                      ? "bottom-1 left-1/2 -translate-x-1/2 w-1 h-1"
-                      : "left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5",
+                      ? "bottom-1 left-1/2 -translate-x-1/2"
+                      : "left-2 top-1/2 -translate-y-1/2",
                     isActive ? "opacity-100 scale-100" : "opacity-0 scale-0",
                   ].join(" ")}
                 />
@@ -240,6 +284,7 @@ export function NavigationBar({
         <div className={[
           "flex items-center shrink-0",
           isH ? "ml-4" : "mt-4 px-1",
+          trailingClassName ?? "",
         ].join(" ")}>
           {trailing}
         </div>

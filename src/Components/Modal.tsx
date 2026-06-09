@@ -69,14 +69,14 @@ export function Modal({
       />
       <div
         className={[
-          "relative z-10 rounded-xl shadow-xl transition-all duration-200",
+          "relative z-10 rounded-xl shadow-xl transition-all duration-200 max-h-[90vh] flex flex-col overflow-hidden",
           sizeClasses[size],
           variantClasses[variant],
           className,
         ].join(" ")}
       >
         {hasHeader && (
-          <div className={["flex items-center px-5 py-4 border-b", headerDividerClasses[variant]].join(" ")}>
+          <div className={["flex items-center shrink-0 px-5 py-4 border-b", headerDividerClasses[variant]].join(" ")}>
             {title != null && (
               <h2 className="flex-1 text-base font-semibold text-zinc-900 dark:text-zinc-100">{title}</h2>
             )}
@@ -97,7 +97,7 @@ export function Modal({
             )}
           </div>
         )}
-        <div className="px-5 py-4 text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">
+        <div className="flex-1 overflow-y-auto px-5 py-4 text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">
           {children}
         </div>
       </div>

@@ -259,10 +259,17 @@ const DEFS: ComponentDef[] = [
   {
     type: "NavigationBar", label: "NavigationBar", group: "nav",
     fields: [
-      { kind: "select",  name: "orientation", label: "Orientation", options: ["horizontal","vertical"], default: "horizontal" },
-      { kind: "select",  name: "indicator",   label: "Indicator",   options: ["gradient-line","pill","dot","none"], default: "gradient-line" },
-      { kind: "select",  name: "variant",     label: "Variant",     options: ["default","subtle","strong"], default: "default" },
-      { kind: "boolean", name: "fullWidth",   label: "Full width",  default: true },
+      { kind: "select",  name: "orientation",       label: "Orientation",        options: ["horizontal","vertical"], default: "horizontal" },
+      { kind: "select",  name: "indicator",         label: "Indicator",          options: ["gradient-line","pill","dot","none"], default: "gradient-line" },
+      { kind: "select",  name: "variant",           label: "Variant",            options: ["default","subtle","strong"], default: "default" },
+      { kind: "boolean", name: "fullWidth",         label: "Full width",         default: true },
+      { kind: "text",    name: "indicatorGradient", label: "Indicator gradient", default: "" },
+      { kind: "select",  name: "indicatorLineSize", label: "Line thickness",     options: ["px","0.5","1","1.5","2"], default: "0.5" },
+      { kind: "select",  name: "dotSize",           label: "Dot size",           options: ["sm","md","lg"], default: "md" },
+      { kind: "text",    name: "activeTextColor",   label: "Active text color",  default: "" },
+      { kind: "text",    name: "inactiveTextColor", label: "Inactive text color",default: "" },
+      { kind: "select",  name: "activeFontWeight",  label: "Active font weight", options: ["font-light","font-normal","font-medium","font-semibold","font-bold"], default: "font-medium" },
+      { kind: "text",    name: "trailingClassName", label: "Trailing className",  default: "" },
     ],
     render: p => {
       const items = [
@@ -278,11 +285,26 @@ const DEFS: ComponentDef[] = [
           indicator={p.indicator as never}
           variant={p.variant as never}
           fullWidth={p.fullWidth as boolean}
+          indicatorGradient={(p.indicatorGradient as string) || undefined}
+          indicatorLineSize={p.indicatorLineSize as never}
+          dotSize={p.dotSize as never}
+          activeTextColor={(p.activeTextColor as string) || undefined}
+          inactiveTextColor={(p.inactiveTextColor as string) || undefined}
+          activeFontWeight={p.activeFontWeight !== "font-medium" ? p.activeFontWeight as string : undefined}
+          trailingClassName={(p.trailingClassName as string) || undefined}
         />
       );
     },
-    code: p =>
-      `const items = [\n  { id: "home",      label: "Home",      icon: Home },\n  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },\n  { id: "settings",  label: "Settings",  icon: Settings },\n];\n\n<NavigationBar\n  items={items}\n  activeId={active}\n  onSelect={setActive}\n  orientation="${p.orientation}"\n  indicator="${p.indicator}"\n  variant="${p.variant}"\n  fullWidth={${p.fullWidth}}\n/>`,
+    code: p => {
+      const ig  = p.indicatorGradient                    ? `\n  indicatorGradient="${p.indicatorGradient}"`    : "";
+      const ils = p.indicatorLineSize !== "0.5"          ? `\n  indicatorLineSize="${p.indicatorLineSize}"`    : "";
+      const ds  = p.dotSize !== "md"                     ? `\n  dotSize="${p.dotSize}"`                        : "";
+      const atc = p.activeTextColor                      ? `\n  activeTextColor="${p.activeTextColor}"`        : "";
+      const itc = p.inactiveTextColor                    ? `\n  inactiveTextColor="${p.inactiveTextColor}"`    : "";
+      const afw = p.activeFontWeight !== "font-medium"   ? `\n  activeFontWeight="${p.activeFontWeight}"`      : "";
+      const tc  = p.trailingClassName                    ? `\n  trailingClassName="${p.trailingClassName}"`    : "";
+      return `const items = [\n  { id: "home",      label: "Home",      icon: Home },\n  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },\n  { id: "settings",  label: "Settings",  icon: Settings },\n];\n\n<NavigationBar\n  items={items}\n  activeId={active}\n  onSelect={setActive}\n  orientation="${p.orientation}"\n  indicator="${p.indicator}"\n  variant="${p.variant}"\n  fullWidth={${p.fullWidth}}${ig}${ils}${ds}${atc}${itc}${afw}${tc}\n/>`;
+    },
   },
   {
     type: "Tabs", label: "Tabs", group: "nav",

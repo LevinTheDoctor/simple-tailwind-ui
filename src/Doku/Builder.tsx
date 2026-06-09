@@ -269,6 +269,7 @@ const DEFS: ComponentDef[] = [
       { kind: "text",    name: "activeTextColor",   label: "Active text color",  default: "" },
       { kind: "text",    name: "inactiveTextColor", label: "Inactive text color",default: "" },
       { kind: "select",  name: "activeFontWeight",  label: "Active font weight", options: ["font-light","font-normal","font-medium","font-semibold","font-bold"], default: "font-medium" },
+      { kind: "text",    name: "height",            label: "Custom height",      default: "" },
       { kind: "text",    name: "trailingClassName", label: "Trailing className",  default: "" },
     ],
     render: p => {
@@ -291,6 +292,7 @@ const DEFS: ComponentDef[] = [
           activeTextColor={(p.activeTextColor as string) || undefined}
           inactiveTextColor={(p.inactiveTextColor as string) || undefined}
           activeFontWeight={p.activeFontWeight !== "font-medium" ? p.activeFontWeight as string : undefined}
+          height={(p.height as string) || undefined}
           trailingClassName={(p.trailingClassName as string) || undefined}
         />
       );
@@ -302,8 +304,9 @@ const DEFS: ComponentDef[] = [
       const atc = p.activeTextColor                      ? `\n  activeTextColor="${p.activeTextColor}"`        : "";
       const itc = p.inactiveTextColor                    ? `\n  inactiveTextColor="${p.inactiveTextColor}"`    : "";
       const afw = p.activeFontWeight !== "font-medium"   ? `\n  activeFontWeight="${p.activeFontWeight}"`      : "";
+      const h   = p.height                               ? `\n  height="${p.height}"`                         : "";
       const tc  = p.trailingClassName                    ? `\n  trailingClassName="${p.trailingClassName}"`    : "";
-      return `const items = [\n  { id: "home",      label: "Home",      icon: Home },\n  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },\n  { id: "settings",  label: "Settings",  icon: Settings },\n];\n\n<NavigationBar\n  items={items}\n  activeId={active}\n  onSelect={setActive}\n  orientation="${p.orientation}"\n  indicator="${p.indicator}"\n  variant="${p.variant}"\n  fullWidth={${p.fullWidth}}${ig}${ils}${ds}${atc}${itc}${afw}${tc}\n/>`;
+      return `const items = [\n  { id: "home",      label: "Home",      icon: Home },\n  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },\n  { id: "settings",  label: "Settings",  icon: Settings },\n];\n\n<NavigationBar\n  items={items}\n  activeId={active}\n  onSelect={setActive}\n  orientation="${p.orientation}"\n  indicator="${p.indicator}"\n  variant="${p.variant}"\n  fullWidth={${p.fullWidth}}${ig}${ils}${ds}${atc}${itc}${afw}${h}${tc}\n/>`;
     },
   },
   {

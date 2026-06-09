@@ -1,6 +1,6 @@
 {
   "name": "@levin-the-doctor/simple-tailwind-ui",
-  "version": "1.3.0",
+  "version": "1.3.5",
   "description": "Handcrafted React + Tailwind CSS component library — clean, dark-mode ready, fully typed.",
   "author": "Levin Rüßmann",
   "license": "MIT",

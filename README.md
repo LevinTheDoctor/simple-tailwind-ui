@@ -237,6 +237,7 @@ const [active, setActive] = useState("home");
 | `activeTextColor` | `string` | `text-zinc-900 dark:text-zinc-100` | Text color of the active item |
 | `inactiveTextColor` | `string` | `text-zinc-500 dark:text-zinc-400` | Text color of inactive items |
 | `activeFontWeight` | `string` | `font-medium` | Font weight class for the active item |
+| `height` | `string` | — | Custom bar height as CSS value (e.g. `"56px"`, `"4rem"`) — overrides `size` |
 | `background` | `string` | — | Tailwind class or CSS for background |
 | `fullWidth` | `boolean` | `false` | Bar takes full width |
 | `sticky` | `boolean` | `false` | Sticks at top while scrolling |

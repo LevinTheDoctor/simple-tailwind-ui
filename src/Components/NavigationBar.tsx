@@ -37,6 +37,7 @@ export type NavigationBarProps = {
   readonly activeTextColor?:     string;
   readonly inactiveTextColor?:   string;
   readonly activeFontWeight?:    string;
+  readonly height?:              string;
   readonly fullWidth?:           boolean;
   readonly sticky?:              boolean;
   readonly className?:           string;
@@ -123,6 +124,7 @@ export function NavigationBar({
   activeTextColor    = "text-zinc-900 dark:text-zinc-100",
   inactiveTextColor  = "text-zinc-500 dark:text-zinc-400",
   activeFontWeight   = "font-medium",
+  height,
   fullWidth          = false,
   sticky            = false,
   className,
@@ -137,7 +139,7 @@ export function NavigationBar({
     "flex transition-colors duration-200",
     isH ? "flex-row items-center" : "flex-col",
     background !== undefined ? background : variantClasses[variant],
-    isH ? navContainerH[size] : navContainerV[size],
+    isH ? (height === undefined ? navContainerH[size] : "") : navContainerV[size],
     fullWidth ? "w-full" : "",
     sticky    ? "sticky top-0 z-20" : "",
     className ?? "",
@@ -149,7 +151,11 @@ export function NavigationBar({
     paddingRight: `max(${navPaddingX[size]}, env(safe-area-inset-right))`,
   } : {};
 
-  const navStyle: CSSProperties = { ...safeAreaStyle, ...userStyle };
+  const navStyle: CSSProperties = {
+    ...safeAreaStyle,
+    ...(height !== undefined && isH ? { height } : {}),
+    ...userStyle,
+  };
 
   return (
     <nav className={navClasses} style={navStyle} {...restProps}>

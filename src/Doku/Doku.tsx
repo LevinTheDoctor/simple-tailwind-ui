@@ -312,7 +312,8 @@ const NAVBAR_PROPS: readonly PropRowBase[] = [
   { id: 15, prop: "dotSize",           type: "sm | md | lg",                  dflt: '"md"',                              desc_de: "Größe des dot-Indikators",                                 desc_en: "Size of the dot indicator" },
   { id: 16, prop: "activeTextColor",   type: "string",                        dflt: '"text-zinc-900 dark:text-zinc-100"',desc_de: "Textfarbe des aktiven Items",                              desc_en: "Text color of the active item" },
   { id: 17, prop: "inactiveTextColor", type: "string",                        dflt: '"text-zinc-500 dark:text-zinc-400"',desc_de: "Textfarbe der inaktiven Items",                            desc_en: "Text color of inactive items" },
-  { id: 18, prop: "activeFontWeight",  type: "string",                        dflt: '"font-medium"',                     desc_de: "Schriftgewicht des aktiven Items (Tailwind font-Klasse)", desc_en: "Font weight of the active item (Tailwind font class)" },
+  { id: 18, prop: "activeFontWeight",  type: "string",  dflt: '"font-medium"', desc_de: "Schriftgewicht des aktiven Items (Tailwind font-Klasse)", desc_en: "Font weight of the active item (Tailwind font class)" },
+  { id: 19, prop: "height",           type: "string",  dflt: "—",             desc_de: "Benutzerdefinierte Höhe der Leiste (CSS-Wert, z. B. \"56px\" oder \"4rem\") — überschreibt size", desc_en: "Custom height of the bar (CSS value, e.g. \"56px\" or \"4rem\") — overrides size" },
 ];
 
 const ACCORDION_PROPS: readonly PropRowBase[] = [

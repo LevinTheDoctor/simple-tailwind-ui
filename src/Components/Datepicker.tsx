@@ -25,7 +25,7 @@ type DatePickerProps = {
   readonly outputFormat?: OutputFormat;
   /** Freies Ausgabeformat für onChange, überschreibt outputFormat. Tokens: DD MM YYYY D M */
   readonly customOutputFormat?: string;
-  readonly value?: Date | null;
+  readonly value?: Date | string | number | null;
   readonly onChange?: (value: Date | string | number) => void;
   readonly minDate?: Date;
   readonly maxDate?: Date;
@@ -135,6 +135,13 @@ function buildCalendarDays(year: number, month: number): Array<{ date: Date; isC
   return days;
 }
 
+function toDate(v: Date | string | number | null | undefined): Date | null {
+  if (v == null) return null;
+  if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 function isSameDay(a: Date, b: Date): boolean {
   return a.getDate() === b.getDate()
     && a.getMonth() === b.getMonth()
@@ -164,15 +171,14 @@ export function DatePicker({
 }: DatePickerProps) {
   const today = useMemo(() => new Date(), []);
 
-  const [open, setOpen]           = useState(false);
-  const [selected, setSelected]   = useState<Date | null>(value ?? null);
-  const [viewYear, setViewYear]   = useState(value?.getFullYear()  ?? today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(value?.getMonth()     ?? today.getMonth());
-  const containerRef              = useRef<HTMLDivElement>(null);
+  const initialDate                        = useMemo(() => toDate(value), []);   // eslint-disable-line react-hooks/exhaustive-deps
+  const [open, setOpen]                    = useState(false);
+  const [internalSelected, setInternalSelected] = useState<Date | null>(initialDate);
+  const [viewYear,  setViewYear]           = useState(initialDate?.getFullYear()  ?? today.getFullYear());
+  const [viewMonth, setViewMonth]          = useState(initialDate?.getMonth()     ?? today.getMonth());
+  const containerRef                       = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (value !== undefined) setSelected(value);
-  }, [value]);
+  const selected = value === undefined ? internalSelected : toDate(value);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -186,13 +192,13 @@ export function DatePicker({
   const calendarDays = useMemo(() => buildCalendarDays(viewYear, viewMonth), [viewYear, viewMonth]);
 
   const prevMonth = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
-    else setViewMonth(m => m - 1);
+    if (viewMonth === 0) { setViewMonth(11); setViewYear((y: number) => y - 1); }
+    else setViewMonth((m: number) => m - 1);
   };
 
   const nextMonth = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
-    else setViewMonth(m => m + 1);
+    if (viewMonth === 11) { setViewMonth(0); setViewYear((y: number) => y + 1); }
+    else setViewMonth((m: number) => m + 1);
   };
 
   const isDateDisabled = (date: Date): boolean => {
@@ -204,7 +210,7 @@ export function DatePicker({
 
   const handleSelectDate = (date: Date) => {
     if (isDateDisabled(date)) return;
-    setSelected(date);
+    setInternalSelected(date);
     const out = customOutputFormat
       ? applyFormatString(date, customOutputFormat)
       : formatOutput(date, outputFormat);

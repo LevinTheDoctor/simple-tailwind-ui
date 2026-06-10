@@ -374,9 +374,104 @@ const GROUPS: Array<{ key: string; label_de: string; label_en: string }> = [
   { key: "nav",     label_de: "Navigation",  label_en: "Nav"     },
 ];
 
+// ── Layout types (Canvas-Flex & Item-Position) ────────────────────────────────
+
+type CanvasDirection = "col" | "row";
+type CanvasJustify   = "start" | "center" | "end" | "between" | "around" | "evenly";
+type CanvasAlign     = "stretch" | "start" | "center" | "end";
+type CanvasGap       = "0" | "1" | "2" | "3" | "4" | "6" | "8";
+
+type CanvasLayout = {
+  direction: CanvasDirection;
+  wrap:      boolean;
+  justify:   CanvasJustify;
+  align:     CanvasAlign;
+  gap:       CanvasGap;
+};
+
+type ItemWidth    = "auto" | "full" | "1/2" | "1/3" | "2/3" | "1/4";
+type ItemSelf     = "auto" | "start" | "center" | "end" | "stretch";
+type ItemPosition = "static" | "relative" | "absolute";
+
+type ItemLayout = {
+  width:     ItemWidth;
+  grow:      boolean;
+  alignSelf: ItemSelf;
+  position:  ItemPosition;
+  top:       string;
+  left:      string;
+  right:     string;
+  bottom:    string;
+  zIndex:    string;
+};
+
+const DEFAULT_CANVAS: CanvasLayout = { direction: "col", wrap: false, justify: "start", align: "stretch", gap: "3" };
+const DEFAULT_ITEM_LAYOUT: ItemLayout = {
+  width: "auto", grow: false, alignSelf: "auto", position: "static",
+  top: "", left: "", right: "", bottom: "", zIndex: "",
+};
+
+const directionClasses: Record<CanvasDirection, string> = { col: "flex-col", row: "flex-row" };
+const justifyClasses: Record<CanvasJustify, string> = {
+  start: "justify-start", center: "justify-center", end: "justify-end",
+  between: "justify-between", around: "justify-around", evenly: "justify-evenly",
+};
+const alignClasses: Record<CanvasAlign, string> = {
+  stretch: "items-stretch", start: "items-start", center: "items-center", end: "items-end",
+};
+const widthClasses: Record<ItemWidth, string> = {
+  auto: "", full: "w-full", "1/2": "w-1/2", "1/3": "w-1/3", "2/3": "w-2/3", "1/4": "w-1/4",
+};
+const selfClasses: Record<ItemSelf, string> = {
+  auto: "", start: "self-start", center: "self-center", end: "self-end", stretch: "self-stretch",
+};
+const positionClasses: Record<ItemPosition, string> = {
+  static: "", relative: "relative", absolute: "absolute",
+};
+
+function canvasClasses(c: CanvasLayout): string {
+  return [
+    "flex",
+    directionClasses[c.direction],
+    c.wrap ? "flex-wrap" : "",
+    justifyClasses[c.justify],
+    alignClasses[c.align],
+    `gap-${c.gap}`,
+  ].filter(Boolean).join(" ");
+}
+
+function itemLayoutClasses(l: ItemLayout): string {
+  return [
+    widthClasses[l.width],
+    l.grow ? "grow" : "",
+    selfClasses[l.alignSelf],
+    positionClasses[l.position],
+  ].filter(Boolean).join(" ");
+}
+
+function itemLayoutStyle(l: ItemLayout): Record<string, string> {
+  const style: Record<string, string> = {};
+  if (l.position !== "static") {
+    if (l.top.trim())    style.top    = l.top.trim();
+    if (l.left.trim())   style.left   = l.left.trim();
+    if (l.right.trim())  style.right  = l.right.trim();
+    if (l.bottom.trim()) style.bottom = l.bottom.trim();
+  }
+  if (l.zIndex.trim()) style.zIndex = l.zIndex.trim();
+  return style;
+}
+
+function isDefaultCanvas(c: CanvasLayout): boolean {
+  return JSON.stringify(c) === JSON.stringify(DEFAULT_CANVAS);
+}
+
+function isDefaultItemLayout(l: ItemLayout): boolean {
+  return JSON.stringify(l) === JSON.stringify(DEFAULT_ITEM_LAYOUT);
+}
+
 // ── Item type ─────────────────────────────────────────────────────────────────
 
-type Item = { id: string; type: string; props: Record<string, unknown> };
+type Item = { id: string; type: string; props: Record<string, unknown>; layout: ItemLayout };
 
 function defaultProps(type: string): Record<string, unknown> {
   return Object.fromEntries(DEF_MAP[type].fields.map(f => [f.name, f.default]));
@@ -384,7 +479,16 @@ function defaultProps(type: string): Record<string, unknown> {
 
 // ── Code generation ───────────────────────────────────────────────────────────
 
-function generateCode(items: Item[]): string {
+function styleToJsx(style: Record<string, string>): string {
+  const entries = Object.entries(style).map(([k, v]) => `${k}: "${v}"`);
+  return entries.length > 0 ? ` style={{ ${entries.join(", ")} }}` : "";
+}
+
+function indent(code: string, prefix = "  "): string {
+  return code.split("\n").map(line => prefix + line).join("\n");
+}
+
+function generateCode(items: Item[], canvas: CanvasLayout): string {
   if (items.length === 0) return "";
   const libTypes = [...new Set(
     items.map(i => i.type).filter(t => !["Heading","Paragraph"].includes(t))
@@ -403,14 +507,38 @@ function generateCode(items: Item[]): string {
   if (libTypes.length) lines.push(`import { ${libTypes.join(", ")} } from "@levin-the-doctor/simple-tailwind-ui"`);
   if (lucideIcons.length) lines.push(`import { ${lucideIcons.join(", ")} } from "lucide-react"`);
   lines.push("");
-  lines.push(...items.map(i => DEF_MAP[i.type].code(i.props)));
+
+  // Item-Layout: nur wrappen wenn vom Default abweichend
+  const bodies = items.map(i => {
+    const inner = DEF_MAP[i.type].code(i.props);
+    if (isDefaultItemLayout(i.layout)) return inner;
+    const cls   = itemLayoutClasses(i.layout);
+    const style = styleToJsx(itemLayoutStyle(i.layout));
+    return `<div${cls ? ` className="${cls}"` : ""}${style}>\n${indent(inner)}\n</div>`;
+  });
+
+  // Canvas-Wrapper nur wenn Flex-Layout oder Item-Positionen genutzt werden
+  const needsWrapper = !isDefaultCanvas(canvas) || items.some(i => !isDefaultItemLayout(i.layout));
+  if (!needsWrapper) {
+    lines.push(...bodies);
+    return lines.join("\n");
+  }
+  const hasAbsolute = items.some(i => i.layout.position === "absolute");
+  const wrapperClasses = `${hasAbsolute ? "relative " : ""}${canvasClasses(canvas)}`;
+  lines.push(`<div className="${wrapperClasses}">`);
+  lines.push(bodies.map(b => indent(b)).join("\n"));
+  lines.push("</div>");
   return lines.join("\n");
 }
 
 // ── Builder ───────────────────────────────────────────────────────────────────
 
+const MINI_INPUT  = "px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent";
+const MINI_SELECT = `${MINI_INPUT} cursor-pointer`;
+
 export function Builder({ lang }: { lang: Lang }) {
   const [items,      setItems]     = useState<Item[]>([]);
+  const [canvas,     setCanvas]    = useState<CanvasLayout>(DEFAULT_CANVAS);
   const [selectedId, setSelectedId]= useState<string | null>(null);
   const [copied,     setCopied]    = useState(false);
   const [actionMsg,  setActionMsg] = useState<string | null>(null);
@@ -422,17 +550,30 @@ export function Builder({ lang }: { lang: Lang }) {
   const de = lang === "de";
 
   const t = {
-    copy:   de ? "Code kopieren"  : "Copy code",
-    copied: de ? "Kopiert!"       : "Copied!",
-    empty:  de ? "Klicke links eine Komponente an, um sie hinzuzufügen." : "Click a component on the left to add it.",
-    noSel:  de ? "Komponente anklicken um Props zu bearbeiten." : "Select a component to edit its props.",
-    props:  de ? "Props"  : "Props",
-    code:   de ? "Code"   : "Code",
+    copy:     de ? "Code kopieren"  : "Copy code",
+    copied:   de ? "Kopiert!"       : "Copied!",
+    empty:    de ? "Klicke links eine Komponente an, um sie hinzuzufügen." : "Click a component on the left to add it.",
+    noSel:    de ? "Komponente anklicken um Props zu bearbeiten." : "Select a component to edit its props.",
+    props:    de ? "Props"  : "Props",
+    code:     de ? "Code"   : "Code",
+    canvas:   de ? "Canvas · Flex"        : "Canvas · Flex",
+    layout:   de ? "Layout & Position"    : "Layout & Position",
+    dirLbl:   de ? "Richtung"             : "Direction",
+    wrapLbl:  "Wrap",
+    justLbl:  "Justify",
+    alignLbl: "Align",
+    gapLbl:   "Gap",
+    widthLbl: de ? "Breite"               : "Width",
+    growLbl:  "Grow",
+    selfLbl:  "Align self",
+    posLbl:   "Position",
+    zLbl:     "z-Index",
+    offHint:  de ? "CSS-Wert, z. B. 10px oder 1rem" : "CSS value, e.g. 10px or 1rem",
   };
 
   function add(type: string) {
     const id = `${uid}-${Date.now()}`;
-    setItems(prev => [...prev, { id, type, props: defaultProps(type) }]);
+    setItems(prev => [...prev, { id, type, props: defaultProps(type), layout: { ...DEFAULT_ITEM_LAYOUT } }]);
     setSelectedId(id);
     setMobileTab("canvas");
   }
@@ -444,6 +585,10 @@ export function Builder({ lang }: { lang: Lang }) {
 
   function setProp(id: string, name: string, value: unknown) {
     setItems(prev => prev.map(i => i.id === id ? { ...i, props: { ...i.props, [name]: value } } : i));
+  }
+
+  function setLayout<K extends keyof ItemLayout>(id: string, name: K, value: ItemLayout[K]) {
+    setItems(prev => prev.map(i => i.id === id ? { ...i, layout: { ...i.layout, [name]: value } } : i));
   }
 
   function move(id: string, dir: -1 | 1) {
@@ -458,7 +603,7 @@ export function Builder({ lang }: { lang: Lang }) {
   }
 
   function copy() {
-    navigator.clipboard.writeText(generateCode(items));
+    navigator.clipboard.writeText(generateCode(items, canvas));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -524,52 +669,198 @@ export function Builder({ lang }: { lang: Lang }) {
       </div>
 
       {/* ── Canvas ───────────────────────────────────────────────────── */}
-      <div className={`overflow-y-auto p-6 min-w-0 ${mobileTab === "canvas" ? "flex flex-1 flex-col gap-3" : "hidden"} md:flex md:flex-col md:flex-1 md:gap-3`}>
+      <div className={`overflow-y-auto p-6 min-w-0 ${mobileTab === "canvas" ? "block flex-1" : "hidden"} md:block md:flex-1`}>
         {items.length === 0 ? (
           <div className="h-full flex items-center justify-center text-sm text-zinc-400 dark:text-zinc-500 text-center px-8">
             {t.empty}
           </div>
-        ) : items.map((item, idx) => (
-          <div
-            key={item.id}
-            onClick={() => { setSelectedId(item.id); setMobileTab("props"); }}
-            className={`relative group rounded-xl border-2 p-4 cursor-pointer transition-all ${
-              selectedId === item.id
-                ? "border-indigo-500 dark:border-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/20"
-                : "border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900"
-            }`}
-          >
-            <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-              {idx > 0 && (
-                <button onClick={e => { e.stopPropagation(); move(item.id, -1); }}
-                  className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-500 cursor-pointer">
-                  <ChevronUp className="w-3 h-3" />
-                </button>
-              )}
-              {idx < items.length - 1 && (
-                <button onClick={e => { e.stopPropagation(); move(item.id, 1); }}
-                  className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-500 cursor-pointer">
-                  <ChevronDown className="w-3 h-3" />
-                </button>
-              )}
-              <button onClick={e => { e.stopPropagation(); remove(item.id); }}
-                className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 text-red-400 cursor-pointer">
-                <Trash2 className="w-3 h-3" />
-              </button>
-            </div>
-            <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 mb-2 block">{item.type}</span>
-            <div className="pointer-events-none select-none">
-              {DEF_MAP[item.type].render(item.props, msg => { setActionMsg(msg); setTimeout(() => setActionMsg(null), 2500); })}
-            </div>
+        ) : (
+          <div className={`relative min-h-full ${canvasClasses(canvas)}`}>
+            {items.map((item, idx) => {
+              const layoutStyle = itemLayoutStyle(item.layout);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => { setSelectedId(item.id); setMobileTab("props"); }}
+                  style={Object.keys(layoutStyle).length > 0 ? layoutStyle : undefined}
+                  className={`group rounded-xl border-2 p-4 cursor-pointer transition-all ${
+                    item.layout.position === "static" ? "relative" : ""
+                  } ${itemLayoutClasses(item.layout)} ${
+                    selectedId === item.id
+                      ? "border-indigo-500 dark:border-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/20"
+                      : "border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900"
+                  }`}
+                >
+                  <div className="absolute top-2 right-2 z-10 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {idx > 0 && (
+                      <button onClick={e => { e.stopPropagation(); move(item.id, -1); }}
+                        className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-500 cursor-pointer">
+                        <ChevronUp className="w-3 h-3" />
+                      </button>
+                    )}
+                    {idx < items.length - 1 && (
+                      <button onClick={e => { e.stopPropagation(); move(item.id, 1); }}
+                        className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-500 cursor-pointer">
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    )}
+                    <button onClick={e => { e.stopPropagation(); remove(item.id); }}
+                      className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 text-red-400 cursor-pointer">
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 mb-2 block">
+                    {item.type}
+                    {!isDefaultItemLayout(item.layout) && (
+                      <span className="text-indigo-400 dark:text-indigo-500"> · {itemLayoutClasses(item.layout) || item.layout.position}</span>
+                    )}
+                  </span>
+                  <div className="pointer-events-none select-none">
+                    {DEF_MAP[item.type].render(item.props, msg => { setActionMsg(msg); setTimeout(() => setActionMsg(null), 2500); })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        ))}
+        )}
       </div>
 
       {/* ── Props + Code ─────────────────────────────────────────────── */}
       <div className={`border-l border-zinc-200 dark:border-zinc-800 overflow-hidden ${mobileTab === "props" ? "flex flex-1 flex-col" : "hidden"} md:flex md:flex-col md:w-[17rem] md:flex-none`}>
 
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">{t.props}</p>
+
+          {/* ── Canvas-Flex-Layout (gilt für alle Items) ─────────────── */}
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">{t.canvas}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.dirLbl}</span>
+              <select
+                value={canvas.direction}
+                onChange={e => setCanvas(c => ({ ...c, direction: e.target.value as CanvasDirection }))}
+                className={MINI_SELECT}
+              >
+                <option value="col">column</option>
+                <option value="row">row</option>
+              </select>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.gapLbl}</span>
+              <select
+                value={canvas.gap}
+                onChange={e => setCanvas(c => ({ ...c, gap: e.target.value as CanvasGap }))}
+                className={MINI_SELECT}
+              >
+                {(["0","1","2","3","4","6","8"] as const).map(g => <option key={g} value={g}>gap-{g}</option>)}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.justLbl}</span>
+              <select
+                value={canvas.justify}
+                onChange={e => setCanvas(c => ({ ...c, justify: e.target.value as CanvasJustify }))}
+                className={MINI_SELECT}
+              >
+                {(["start","center","end","between","around","evenly"] as const).map(j => <option key={j} value={j}>{j}</option>)}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.alignLbl}</span>
+              <select
+                value={canvas.align}
+                onChange={e => setCanvas(c => ({ ...c, align: e.target.value as CanvasAlign }))}
+                className={MINI_SELECT}
+              >
+                {(["stretch","start","center","end"] as const).map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
+            </label>
+          </div>
+          <button
+            onClick={() => setCanvas(c => ({ ...c, wrap: !c.wrap }))}
+            className={`self-start px-2.5 py-1 text-xs rounded-lg border font-mono transition-colors cursor-pointer ${
+              canvas.wrap
+                ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300"
+                : "border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400"
+            }`}
+          >
+            {t.wrapLbl}: {canvas.wrap ? "true" : "false"}
+          </button>
+
+          {/* ── Layout & Position des ausgewählten Items ─────────────── */}
+          {selected && (
+            <>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mt-2">{t.layout}</p>
+              <div className="grid grid-cols-2 gap-2">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.widthLbl}</span>
+                  <select
+                    value={selected.layout.width}
+                    onChange={e => setLayout(selected.id, "width", e.target.value as ItemWidth)}
+                    className={MINI_SELECT}
+                  >
+                    {(["auto","full","1/2","1/3","2/3","1/4"] as const).map(w => <option key={w} value={w}>{w}</option>)}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.selfLbl}</span>
+                  <select
+                    value={selected.layout.alignSelf}
+                    onChange={e => setLayout(selected.id, "alignSelf", e.target.value as ItemSelf)}
+                    className={MINI_SELECT}
+                  >
+                    {(["auto","start","center","end","stretch"] as const).map(a => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.posLbl}</span>
+                  <select
+                    value={selected.layout.position}
+                    onChange={e => setLayout(selected.id, "position", e.target.value as ItemPosition)}
+                    className={MINI_SELECT}
+                  >
+                    {(["static","relative","absolute"] as const).map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t.zLbl}</span>
+                  <input
+                    value={selected.layout.zIndex}
+                    onChange={e => setLayout(selected.id, "zIndex", e.target.value)}
+                    placeholder="10"
+                    className={MINI_INPUT}
+                  />
+                </label>
+              </div>
+              <button
+                onClick={() => setLayout(selected.id, "grow", !selected.layout.grow)}
+                className={`self-start px-2.5 py-1 text-xs rounded-lg border font-mono transition-colors cursor-pointer ${
+                  selected.layout.grow
+                    ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300"
+                    : "border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400"
+                }`}
+              >
+                {t.growLbl}: {selected.layout.grow ? "true" : "false"}
+              </button>
+              {selected.layout.position !== "static" && (
+                <div className="grid grid-cols-2 gap-2" title={t.offHint}>
+                  {(["top","left","right","bottom"] as const).map(side => (
+                    <label key={side} className="flex flex-col gap-1">
+                      <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{side}</span>
+                      <input
+                        value={selected.layout[side]}
+                        onChange={e => setLayout(selected.id, side, e.target.value)}
+                        placeholder="10px"
+                        className={MINI_INPUT}
+                      />
+                    </label>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* ── Komponenten-Props ─────────────────────────────────────── */}
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mt-2">{t.props}</p>
           {selected && def ? def.fields.map(field => (
             <label key={field.name} className="flex flex-col gap-1">
               <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{field.label}</span>
@@ -652,7 +943,7 @@ export function Builder({ lang }: { lang: Lang }) {
           </div>
           <pre className="text-[10px] font-mono bg-zinc-900 text-zinc-100 rounded-xl p-3 overflow-auto max-h-52 leading-relaxed whitespace-pre-wrap break-all">
             {items.length > 0
-              ? generateCode(items)
+              ? generateCode(items, canvas)
               : <span className="text-zinc-500">{de ? "// Noch leer" : "// Nothing here yet"}</span>
             }
           </pre>

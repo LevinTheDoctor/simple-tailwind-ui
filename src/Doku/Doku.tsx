@@ -20,10 +20,24 @@ import { ToastProvider, useToast } from "../Components/Toast";
 import { Tabs, TabPanel } from "../Components/Tabs";
 import { Badge } from "../Components/Badge";
 import { Changelog } from "../Components/Changelog";
+import { CodePreview, type CodeLanguage } from "../Components/CodePreview";
+import { FileEmbed } from "../Components/FileEmbed";
+import { MultipleChoice } from "../Components/MultipleChoice";
+import { RadioGroup } from "../Components/RadioGroup";
+import { Toggle } from "../Components/Toggle";
+import { Slider } from "../Components/Slider";
+import { Carousel } from "../Components/Carousel";
+import { FlipCard } from "../Components/FlipCard";
+import { PictureFrame } from "../Components/PictureFrame";
+import { YouTubeEmbed } from "../Components/YouTubeEmbed";
+import { ImageButton } from "../Components/ImageButton";
+import { BurgerMenu } from "../Components/BurgerMenu";
+import { SearchBar } from "../Components/SearchBar";
 import {
   Search, Mail, Globe, Trash2, Plus, Save, User, Copy, Check,
   Home, LayoutDashboard, BarChart3, Settings, Bell, MoreHorizontal,
   Tag, Star, AlertCircle, ShieldCheck, Zap, Download, Sun, Moon, Menu,
+  LogOut, ExternalLink,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -79,6 +93,29 @@ const S = {
       tabs:          { title: "Tabs",          desc: "Tab-Navigation mit aktivem Indigo-Indikator — horizontal oder vertikal." },
       badge:         { title: "Badge",         desc: "Inline-Label mit Farbschema, Varianten, Icon- und Dot-Support." },
       changelog:     { title: "Changelog",     desc: "Info-Button der ein Modal mit Markdown-Changelog öffnet — lädt die Datei per Fetch." },
+      multiplechoice:{ title: "MultipleChoice",desc: "Checkbox-Gruppe für Mehrfachauswahl — Akzentfarbe frei via Tailwind-Props." },
+      radiogroup:    { title: "RadioGroup",    desc: "Radio-Buttons für Einfachauswahl — vertikal oder horizontal." },
+      toggle:        { title: "Toggle",        desc: "Slide-Button (Schalter) mit frei wählbaren An/Aus-Farben." },
+      slider:        { title: "Slider",        desc: "Slide-Bar für Zahlenwerte mit Live-Anzeige und eigener Füllfarbe." },
+      carousel:      { title: "Carousel",      desc: "Slideshow für Bilder oder beliebige Inhalte — Pfeile, Dots, Autoplay." },
+      flipcard:      { title: "FlipCard",      desc: "Lernkarte mit 3D-Flip — Vorder- und Rückseite frei gestaltbar." },
+      pictureframe:  { title: "PictureFrame",  desc: "Bilderrahmen mit Schatten, Varianten und optionaler Bildunterschrift." },
+      youtubeembed:  { title: "YouTubeEmbed",  desc: "YouTube-Video einbetten — per Link, Video-ID oder Embed-Code." },
+      imagebutton:   { title: "ImageButton",   desc: "Button als Bild — mit Hover-Zoom, Overlay-Label und Icon." },
+      burgermenu:    { title: "BurgerMenu",    desc: "Animiertes Burger-Menü mit aufklappendem Panel und Icon-Items." },
+      searchbar:     { title: "SearchBar",     desc: "Suchleiste mit Vorschlägen, Clear-Button und Enter-Suche." },
+      codepreview:   { title: "CodePreview",   desc: "Code-Block mit Syntax-Highlighting, Titelzeile und Copy-Button." },
+      fileembed:     { title: "FileEmbed",     desc: "Externe Dateien per Pfad einbinden — Markdown, Code, Text oder Bild." },
+    },
+    groups: {
+      start:      "Erste Schritte",
+      basics:     "Basis",
+      components: "Komponenten",
+      forms:      "Formulare",
+      display:    "Anzeige",
+      media:      "Media",
+      navsearch:  "Navigation & Suche",
+      developer:  "Developer",
     },
     ex: {
       variants:    "Varianten",
@@ -159,6 +196,29 @@ const S = {
       tabs:          { title: "Tabs",          desc: "Tab navigation with active indigo indicator — horizontal or vertical." },
       badge:         { title: "Badge",         desc: "Inline label with color scheme, variants, icon and dot support." },
       changelog:     { title: "Changelog",     desc: "Info button that opens a modal with a Markdown changelog — fetches the file on demand." },
+      multiplechoice:{ title: "MultipleChoice",desc: "Checkbox group for multi-selection — accent color customizable via Tailwind props." },
+      radiogroup:    { title: "RadioGroup",    desc: "Radio buttons for single selection — vertical or horizontal." },
+      toggle:        { title: "Toggle",        desc: "Slide button (switch) with customizable on/off colors." },
+      slider:        { title: "Slider",        desc: "Slide bar for numeric values with live display and custom fill color." },
+      carousel:      { title: "Carousel",      desc: "Slideshow for images or arbitrary content — arrows, dots, autoplay." },
+      flipcard:      { title: "FlipCard",      desc: "Flash card with 3D flip — front and back fully customizable." },
+      pictureframe:  { title: "PictureFrame",  desc: "Picture frame with shadows, variants and optional caption." },
+      youtubeembed:  { title: "YouTubeEmbed",  desc: "Embed a YouTube video — via link, video ID or embed code." },
+      imagebutton:   { title: "ImageButton",   desc: "A button that is an image — with hover zoom, overlay label and icon." },
+      burgermenu:    { title: "BurgerMenu",    desc: "Animated burger menu with dropdown panel and icon items." },
+      searchbar:     { title: "SearchBar",     desc: "Search bar with suggestions, clear button and enter-to-search." },
+      codepreview:   { title: "CodePreview",   desc: "Code block with syntax highlighting, title bar and copy button." },
+      fileembed:     { title: "FileEmbed",     desc: "Embed external files by path — Markdown, code, text or image." },
+    },
+    groups: {
+      start:      "Getting Started",
+      basics:     "Basics",
+      components: "Components",
+      forms:      "Forms",
+      display:    "Display",
+      media:      "Media",
+      navsearch:  "Navigation & Search",
+      developer:  "Developer",
     },
     ex: {
       variants:    "Variants",
@@ -403,6 +463,152 @@ const BADGE_PROPS: readonly PropRowBase[] = [
   { id: 9, prop: "className",    type: "string",                                        dflt: '""',        desc_de: "Zusätzliche Klassen",                  desc_en: "Additional classes" },
 ];
 
+const MULTIPLECHOICE_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "title",       type: "string",                                dflt: "—",          desc_de: "Label-Text (via TitelBorder)",                  desc_en: "Label text (via TitelBorder)" },
+  { id: 2, prop: "options",     type: "{ value; label; disabled? }[]",         dflt: "—",          desc_de: "Auswahloptionen",                               desc_en: "Select options" },
+  { id: 3, prop: "value",       type: "string[]",                              dflt: "—",          desc_de: "Kontrollierte Auswahl",                         desc_en: "Controlled selection" },
+  { id: 4, prop: "defaultValue",type: "string[]",                              dflt: "[]",         desc_de: "Initiale Auswahl (unkontrolliert)",             desc_en: "Initial selection (uncontrolled)" },
+  { id: 5, prop: "onChange",    type: "(values: string[]) => void",            dflt: "—",          desc_de: "Callback bei Auswahlwechsel",                   desc_en: "Callback when selection changes" },
+  { id: 6, prop: "orientation", type: "vertical | horizontal",                 dflt: '"vertical"', desc_de: "Anordnung der Optionen",                        desc_en: "Option layout" },
+  { id: 7, prop: "accentColor", type: "string",                                dflt: "indigo",     desc_de: "Tailwind-Klassen für aktivierte Checkboxen",    desc_en: "Tailwind classes for checked boxes" },
+  { id: 8, prop: "size",        type: "sm | md | lg | full",                   dflt: '"md"',       desc_de: "Größe von Text und Checkbox",                   desc_en: "Text and checkbox size" },
+  { id: 9, prop: "disabled",    type: "boolean",                               dflt: "false",      desc_de: "Deaktiviert alle Optionen",                     desc_en: "Disables all options" },
+];
+
+const RADIOGROUP_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "title",       type: "string",                                dflt: "—",          desc_de: "Label-Text (via TitelBorder)",                  desc_en: "Label text (via TitelBorder)" },
+  { id: 2, prop: "options",     type: "{ value; label; disabled? }[]",         dflt: "—",          desc_de: "Auswahloptionen",                               desc_en: "Select options" },
+  { id: 3, prop: "value",       type: "string",                                dflt: "—",          desc_de: "Kontrollierter Wert",                           desc_en: "Controlled value" },
+  { id: 4, prop: "defaultValue",type: "string",                                dflt: "—",          desc_de: "Initialer Wert (unkontrolliert)",               desc_en: "Initial value (uncontrolled)" },
+  { id: 5, prop: "onChange",    type: "(value: string) => void",               dflt: "—",          desc_de: "Callback bei Auswahl",                          desc_en: "Callback on selection" },
+  { id: 6, prop: "orientation", type: "vertical | horizontal",                 dflt: '"vertical"', desc_de: "Anordnung der Optionen",                        desc_en: "Option layout" },
+  { id: 7, prop: "accentColor", type: "string",                                dflt: "indigo",     desc_de: "Tailwind-Klassen (border-* / bg-*) des aktiven Radios", desc_en: "Tailwind classes (border-* / bg-*) for the active radio" },
+  { id: 8, prop: "size",        type: "sm | md | lg | full",                   dflt: '"md"',       desc_de: "Größe von Text und Radio",                      desc_en: "Text and radio size" },
+  { id: 9, prop: "disabled",    type: "boolean",                               dflt: "false",      desc_de: "Deaktiviert alle Optionen",                     desc_en: "Disables all options" },
+];
+
+const TOGGLE_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "checked",        type: "boolean",                            dflt: "—",         desc_de: "Kontrollierter Zustand",                        desc_en: "Controlled state" },
+  { id: 2, prop: "defaultChecked", type: "boolean",                            dflt: "false",     desc_de: "Initialer Zustand (unkontrolliert)",            desc_en: "Initial state (uncontrolled)" },
+  { id: 3, prop: "onChange",       type: "(checked: boolean) => void",         dflt: "—",         desc_de: "Callback beim Umschalten",                      desc_en: "Callback on toggle" },
+  { id: 4, prop: "label",          type: "string",                             dflt: "—",         desc_de: "Beschriftung neben dem Schalter",               desc_en: "Label next to the switch" },
+  { id: 5, prop: "labelPosition",  type: "left | right",                       dflt: '"right"',   desc_de: "Position des Labels",                           desc_en: "Label position" },
+  { id: 6, prop: "onColor",        type: "string",                             dflt: "indigo",    desc_de: "Tailwind bg-Klassen im An-Zustand",             desc_en: "Tailwind bg classes when on" },
+  { id: 7, prop: "offColor",       type: "string",                             dflt: "zinc",      desc_de: "Tailwind bg-Klassen im Aus-Zustand",            desc_en: "Tailwind bg classes when off" },
+  { id: 8, prop: "size",           type: "sm | md | lg",                       dflt: '"md"',      desc_de: "Größe des Schalters",                           desc_en: "Switch size" },
+  { id: 9, prop: "disabled",       type: "boolean",                            dflt: "false",     desc_de: "Deaktiviert den Schalter",                      desc_en: "Disables the switch" },
+];
+
+const SLIDER_PROPS: readonly PropRowBase[] = [
+  { id: 1,  prop: "title",        type: "string",                              dflt: "—",         desc_de: "Label-Text (via TitelBorder)",                  desc_en: "Label text (via TitelBorder)" },
+  { id: 2,  prop: "min / max",    type: "number",                              dflt: "0 / 100",   desc_de: "Wertebereich",                                  desc_en: "Value range" },
+  { id: 3,  prop: "step",         type: "number",                              dflt: "1",         desc_de: "Schrittweite",                                  desc_en: "Step size" },
+  { id: 4,  prop: "value",        type: "number",                              dflt: "—",         desc_de: "Kontrollierter Wert",                           desc_en: "Controlled value" },
+  { id: 5,  prop: "defaultValue", type: "number",                              dflt: "min",       desc_de: "Initialer Wert (unkontrolliert)",               desc_en: "Initial value (uncontrolled)" },
+  { id: 6,  prop: "onChange",     type: "(value: number) => void",             dflt: "—",         desc_de: "Callback bei Wertänderung",                     desc_en: "Callback on value change" },
+  { id: 7,  prop: "showValue",    type: "boolean",                             dflt: "true",      desc_de: "Zeigt aktuellen Wert rechts an",                desc_en: "Shows current value on the right" },
+  { id: 8,  prop: "formatValue",  type: "(value: number) => string",           dflt: "—",         desc_de: "Formatiert die Wert-Anzeige",                   desc_en: "Formats the value display" },
+  { id: 9,  prop: "fillColor",    type: "string",                              dflt: "indigo",    desc_de: "Tailwind bg-Klassen für die Füllung",           desc_en: "Tailwind bg classes for the fill" },
+  { id: 10, prop: "size",         type: "sm | md | lg | full",                 dflt: '"md"',      desc_de: "Breite und Trackhöhe",                          desc_en: "Width and track height" },
+  { id: 11, prop: "disabled",     type: "boolean",                             dflt: "false",     desc_de: "Deaktiviert den Slider",                        desc_en: "Disables the slider" },
+];
+
+const CAROUSEL_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "children",   type: "ReactNode[]",                            dflt: "—",         desc_de: "Beliebige Slides (alternativ zu images)",        desc_en: "Arbitrary slides (alternative to images)" },
+  { id: 2, prop: "images",     type: "string[]",                               dflt: "—",         desc_de: "Bild-URLs als Slides",                           desc_en: "Image URLs as slides" },
+  { id: 3, prop: "autoPlay",   type: "number",                                 dflt: "0",         desc_de: "Autoplay-Intervall in ms (0 = aus)",             desc_en: "Autoplay interval in ms (0 = off)" },
+  { id: 4, prop: "loop",       type: "boolean",                                dflt: "true",      desc_de: "Endlos-Schleife",                                desc_en: "Endless loop" },
+  { id: 5, prop: "showArrows", type: "boolean",                                dflt: "true",      desc_de: "Pfeil-Buttons anzeigen",                         desc_en: "Show arrow buttons" },
+  { id: 6, prop: "showDots",   type: "boolean",                                dflt: "true",      desc_de: "Dot-Navigation anzeigen",                        desc_en: "Show dot navigation" },
+  { id: 7, prop: "dotColor",   type: "string",                                 dflt: "indigo",    desc_de: "Tailwind bg-Klasse des aktiven Dots",            desc_en: "Tailwind bg class of the active dot" },
+  { id: 8, prop: "onChange",   type: "(index: number) => void",                dflt: "—",         desc_de: "Callback bei Slide-Wechsel",                     desc_en: "Callback on slide change" },
+  { id: 9, prop: "size",       type: "sm | md | lg | full",                    dflt: '"md"',      desc_de: "Breite und Höhe",                                desc_en: "Width and height" },
+];
+
+const FLIPCARD_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "front / back",   type: "ReactNode",                          dflt: "—",            desc_de: "Inhalt der Vorder- / Rückseite",              desc_en: "Front / back content" },
+  { id: 2, prop: "trigger",        type: "click | hover",                      dflt: '"click"',      desc_de: "Auslöser für den Flip",                        desc_en: "Flip trigger" },
+  { id: 3, prop: "direction",      type: "horizontal | vertical",              dflt: '"horizontal"', desc_de: "Drehrichtung",                                 desc_en: "Flip direction" },
+  { id: 4, prop: "flipped",        type: "boolean",                            dflt: "—",            desc_de: "Kontrollierter Flip-Zustand",                  desc_en: "Controlled flip state" },
+  { id: 5, prop: "onFlip",         type: "(flipped: boolean) => void",         dflt: "—",            desc_de: "Callback beim Umdrehen",                       desc_en: "Callback on flip" },
+  { id: 6, prop: "frontClassName", type: "string",                             dflt: "white/zinc",   desc_de: "Tailwind-Klassen der Vorderseite",             desc_en: "Tailwind classes for the front" },
+  { id: 7, prop: "backClassName",  type: "string",                             dflt: "indigo-grad.", desc_de: "Tailwind-Klassen der Rückseite",               desc_en: "Tailwind classes for the back" },
+  { id: 8, prop: "size",           type: "sm | md | lg | full",                dflt: '"md"',         desc_de: "Breite und Höhe",                              desc_en: "Width and height" },
+];
+
+const PICTUREFRAME_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "src",       type: "string",                                  dflt: "—",         desc_de: "Bild-URL",                                       desc_en: "Image URL" },
+  { id: 2, prop: "alt",       type: "string",                                  dflt: "—",         desc_de: "Alternativtext",                                 desc_en: "Alt text" },
+  { id: 3, prop: "caption",   type: "string",                                  dflt: "—",         desc_de: "Bildunterschrift unter dem Bild",                desc_en: "Caption below the image" },
+  { id: 4, prop: "variant",   type: "default | subtle | strong",               dflt: '"default"', desc_de: "Rahmenstärke und Schatten",                      desc_en: "Frame weight and shadow" },
+  { id: 5, prop: "size",      type: "sm | md | lg | full",                     dflt: '"md"',      desc_de: "Maximale Breite",                                desc_en: "Maximum width" },
+  { id: 6, prop: "fullWidth", type: "boolean",                                 dflt: "false",     desc_de: "Nimmt volle Breite ein",                         desc_en: "Takes full width" },
+];
+
+const YOUTUBEEMBED_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "source",    type: "string",                                  dflt: "—",         desc_de: "Watch-/Kurz-/Shorts-URL, Video-ID oder Embed-Code", desc_en: "Watch/short/shorts URL, video ID or embed code" },
+  { id: 2, prop: "title",     type: "string",                                  dflt: '"YouTube video"', desc_de: "iframe-Titel (Barrierefreiheit)",          desc_en: "iframe title (accessibility)" },
+  { id: 3, prop: "start",     type: "number",                                  dflt: "—",         desc_de: "Startzeitpunkt in Sekunden",                     desc_en: "Start time in seconds" },
+  { id: 4, prop: "autoplay",  type: "boolean",                                 dflt: "false",     desc_de: "Startet das Video automatisch",                  desc_en: "Starts the video automatically" },
+  { id: 5, prop: "size",      type: "sm | md | lg | full",                     dflt: '"md"',      desc_de: "Maximale Breite (16:9 bleibt erhalten)",         desc_en: "Maximum width (16:9 preserved)" },
+  { id: 6, prop: "fullWidth", type: "boolean",                                 dflt: "false",     desc_de: "Nimmt volle Breite ein",                         desc_en: "Takes full width" },
+];
+
+const IMAGEBUTTON_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "src / alt",   type: "string",                                dflt: "—",         desc_de: "Bild-URL und Alternativtext",                    desc_en: "Image URL and alt text" },
+  { id: 2, prop: "label",       type: "string",                                dflt: "—",         desc_de: "Beschriftung im Overlay",                        desc_en: "Label in the overlay" },
+  { id: 3, prop: "icon",        type: "LucideIcon",                            dflt: "—",         desc_de: "Icon neben dem Label",                           desc_en: "Icon next to the label" },
+  { id: 4, prop: "showOverlay", type: "boolean",                               dflt: "true",      desc_de: "Gradient-Overlay mit Label anzeigen",            desc_en: "Show gradient overlay with label" },
+  { id: 5, prop: "onClick",     type: "() => void",                            dflt: "—",         desc_de: "Klick-Callback (plus alle Button-Attribute)",    desc_en: "Click callback (plus all button attributes)" },
+  { id: 6, prop: "size",        type: "sm | md | lg | full",                   dflt: '"md"',      desc_de: "Breite und Höhe",                                desc_en: "Width and height" },
+  { id: 7, prop: "disabled",    type: "boolean",                               dflt: "false",     desc_de: "Deaktiviert den Button",                         desc_en: "Disables the button" },
+];
+
+const BURGERMENU_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "items",       type: "BurgerMenuItem[]",                      dflt: "—",         desc_de: "Menüeinträge (id, label, icon?, disabled?)",     desc_en: "Menu items (id, label, icon?, disabled?)" },
+  { id: 2, prop: "onSelect",    type: "(id: string) => void",                  dflt: "—",         desc_de: "Callback bei Klick auf einen Eintrag",           desc_en: "Callback when an item is clicked" },
+  { id: 3, prop: "activeId",    type: "string",                                dflt: "—",         desc_de: "ID des aktiven Eintrags",                        desc_en: "ID of the active item" },
+  { id: 4, prop: "header",      type: "ReactNode",                             dflt: "—",         desc_de: "Inhalt über den Einträgen (z. B. Profil)",      desc_en: "Content above the items (e.g. profile)" },
+  { id: 5, prop: "align",       type: "left | right",                          dflt: '"left"',    desc_de: "Ausrichtung des Panels",                         desc_en: "Panel alignment" },
+  { id: 6, prop: "accentColor", type: "string",                                dflt: "indigo",    desc_de: "Tailwind-Klassen des aktiven Eintrags",          desc_en: "Tailwind classes for the active item" },
+  { id: 7, prop: "size",        type: "sm | md | lg",                          dflt: '"md"',      desc_de: "Größe des Burger-Buttons",                       desc_en: "Burger button size" },
+  { id: 8, prop: "disabled",    type: "boolean",                               dflt: "false",     desc_de: "Deaktiviert den Button",                         desc_en: "Disables the button" },
+];
+
+const SEARCHBAR_PROPS: readonly PropRowBase[] = [
+  { id: 1,  prop: "value",          type: "string",                            dflt: "—",         desc_de: "Kontrollierter Wert",                            desc_en: "Controlled value" },
+  { id: 2,  prop: "defaultValue",   type: "string",                            dflt: '""',        desc_de: "Initialer Wert (unkontrolliert)",                desc_en: "Initial value (uncontrolled)" },
+  { id: 3,  prop: "onChange",       type: "(value: string) => void",           dflt: "—",         desc_de: "Callback bei Eingabe",                           desc_en: "Callback on input" },
+  { id: 4,  prop: "onSearch",       type: "(value: string) => void",           dflt: "—",         desc_de: "Callback bei Enter oder Vorschlag-Klick",        desc_en: "Callback on Enter or suggestion click" },
+  { id: 5,  prop: "suggestions",    type: "string[]",                          dflt: "—",         desc_de: "Vorschläge — werden live gefiltert",             desc_en: "Suggestions — filtered live" },
+  { id: 6,  prop: "maxSuggestions", type: "number",                            dflt: "6",         desc_de: "Max. angezeigte Vorschläge",                     desc_en: "Max suggestions shown" },
+  { id: 7,  prop: "clearable",      type: "boolean",                           dflt: "true",      desc_de: "Zeigt X-Button zum Leeren",                      desc_en: "Shows X button to clear" },
+  { id: 8,  prop: "accentRing",     type: "string",                            dflt: "indigo",    desc_de: "Tailwind-Klassen für den Fokus-Ring",            desc_en: "Tailwind classes for the focus ring" },
+  { id: 9,  prop: "variant",        type: "default | subtle | strong",         dflt: '"default"', desc_de: "Rahmen- und Hintergrundstil",                    desc_en: "Border and background style" },
+  { id: 10, prop: "size",           type: "sm | md | lg | full",               dflt: '"md"',      desc_de: "Höhe und Breite",                                desc_en: "Height and width" },
+  { id: 11, prop: "loading",        type: "boolean",                           dflt: "false",     desc_de: "Zeigt Spinner statt Lupe",                       desc_en: "Shows spinner instead of magnifier" },
+  { id: 12, prop: "disabled",       type: "boolean",                           dflt: "false",     desc_de: "Deaktiviert die Suchleiste",                     desc_en: "Disables the search bar" },
+];
+
+const CODEPREVIEW_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "code",            type: "string",                            dflt: "—",         desc_de: "Anzuzeigender Quellcode",                        desc_en: "Source code to display" },
+  { id: 2, prop: "language",        type: "tsx | ts | jsx | js | html | css | json | bash | text", dflt: '"tsx"', desc_de: "Sprache fürs Highlighting",       desc_en: "Language for highlighting" },
+  { id: 3, prop: "title",           type: "string",                            dflt: "—",         desc_de: "Dateiname — aktiviert die Titelzeile",           desc_en: "Filename — enables the title bar" },
+  { id: 4, prop: "showLineNumbers", type: "boolean",                           dflt: "false",     desc_de: "Zeilennummern anzeigen",                         desc_en: "Show line numbers" },
+  { id: 5, prop: "showCopy",        type: "boolean",                           dflt: "true",      desc_de: "Copy-Button anzeigen",                           desc_en: "Show copy button" },
+  { id: 6, prop: "maxHeight",       type: "string",                            dflt: "—",         desc_de: "Max. Höhe mit Scrollen (z. B. \"300px\")",      desc_en: "Max height with scrolling (e.g. \"300px\")" },
+];
+
+const FILEEMBED_PROPS: readonly PropRowBase[] = [
+  { id: 1, prop: "path",      type: "string",                                  dflt: "—",         desc_de: "URL-Pfad zur Datei (z. B. /CHANGELOG.md)",      desc_en: "URL path to the file (e.g. /CHANGELOG.md)" },
+  { id: 2, prop: "type",      type: "auto | markdown | code | text | image",   dflt: '"auto"',    desc_de: "Render-Typ — auto erkennt per Dateiendung",      desc_en: "Render type — auto detects by extension" },
+  { id: 3, prop: "title",     type: "string",                                  dflt: "—",         desc_de: "Label (TitelBorder) bzw. Dateiname (Code)",      desc_en: "Label (TitelBorder) or filename (code)" },
+  { id: 4, prop: "language",  type: "CodeLanguage",                            dflt: "auto",      desc_de: "Überschreibt die erkannte Code-Sprache",         desc_en: "Overrides the detected code language" },
+  { id: 5, prop: "maxHeight", type: "string",                                  dflt: "—",         desc_de: "Max. Höhe mit Scrollen",                         desc_en: "Max height with scrolling" },
+  { id: 6, prop: "variant",   type: "default | subtle | strong",               dflt: '"default"', desc_de: "Stil des TitelBorder-Wrappers",                  desc_en: "TitelBorder wrapper style" },
+  { id: 7, prop: "size",      type: "sm | md | lg | full",                     dflt: '"md"',      desc_de: "Maximale Breite",                                desc_en: "Maximum width" },
+];
+
 // ── Prop Table Component ──────────────────────────────────────────────────────
 
 function PropTable({ lang, data }: { lang: Lang; data: readonly PropRowBase[] }) {
@@ -429,27 +635,10 @@ function PropTable({ lang, data }: { lang: Lang; data: readonly PropRowBase[] })
 }
 
 // ── CodeBlock ─────────────────────────────────────────────────────────────────
+// Nutzt die CodePreview-Komponente der Bibliothek (Syntax-Highlighting + Copy).
 
-function CodeBlock({ code }: { code: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-  return (
-    <div className="relative group rounded-xl overflow-hidden">
-      <pre className="bg-zinc-900 text-zinc-100 text-xs p-4 overflow-x-auto leading-relaxed">
-        <code>{code}</code>
-      </pre>
-      <button
-        onClick={copy}
-        className="absolute top-2.5 right-2.5 p-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-      >
-        {copied ? <Check size={12} /> : <Copy size={12} />}
-      </button>
-    </div>
-  );
+function CodeBlock({ code, language = "tsx" }: { code: string; language?: CodeLanguage }) {
+  return <CodePreview code={code} language={language} />;
 }
 
 // ── ExampleBlock ──────────────────────────────────────────────────────────────
@@ -462,10 +651,10 @@ function ExampleBlock({ label, preview, code }: {
   return (
     <div className="flex flex-col gap-0">
       <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">{label}</p>
-      <div className="flex flex-wrap gap-3 items-start p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-t-xl">
+      <div className="flex flex-wrap gap-3 items-start p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-t-xl shadow-sm">
         {preview}
       </div>
-      <CodeBlock code={code} />
+      <CodePreview code={code} language="tsx" className="rounded-t-none ring-0 border border-zinc-800" />
     </div>
   );
 }
@@ -523,9 +712,28 @@ const NAV_KEYS = [
   "card", "button", "input", "dropdown", "combobox", "datepicker",
   "titelborder", "navigationbar", "accordion", "tabelle",
   "modal", "toast", "tabs", "badge", "changelog",
+  "multiplechoice", "radiogroup", "toggle", "slider",
+  "carousel", "flipcard", "pictureframe",
+  "youtubeembed", "imagebutton",
+  "burgermenu", "searchbar",
+  "codepreview", "fileembed",
 ] as const;
 
 type NavKey = typeof NAV_KEYS[number];
+
+type NavGroupKey = "start" | "basics" | "components" | "forms" | "display" | "media" | "navsearch" | "developer";
+
+// Reihenfolge der Keys entspricht der DOM-Reihenfolge der Sektionen (Scroll-Spy).
+const NAV_GROUPS: ReadonlyArray<{ id: NavGroupKey; keys: readonly NavKey[] }> = [
+  { id: "start",      keys: ["install"] },
+  { id: "basics",     keys: ["card", "button", "input", "dropdown", "combobox", "datepicker", "titelborder"] },
+  { id: "components", keys: ["navigationbar", "accordion", "tabelle", "modal", "toast", "tabs", "badge", "changelog"] },
+  { id: "forms",      keys: ["multiplechoice", "radiogroup", "toggle", "slider"] },
+  { id: "display",    keys: ["carousel", "flipcard", "pictureframe"] },
+  { id: "media",      keys: ["youtubeembed", "imagebutton"] },
+  { id: "navsearch",  keys: ["burgermenu", "searchbar"] },
+  { id: "developer",  keys: ["codepreview", "fileembed"] },
+];
 
 const IMPORT_STRINGS: Record<NavKey, string> = {
   install:       'npm install @levin-the-doctor/simple-tailwind-ui',
@@ -544,6 +752,19 @@ const IMPORT_STRINGS: Record<NavKey, string> = {
   tabs:          'import { Tabs, TabPanel } from "@levin-the-doctor/simple-tailwind-ui"',
   badge:         'import { Badge } from "@levin-the-doctor/simple-tailwind-ui"',
   changelog:     'import { Changelog } from "@levin-the-doctor/simple-tailwind-ui"',
+  multiplechoice:'import { MultipleChoice } from "@levin-the-doctor/simple-tailwind-ui"',
+  radiogroup:    'import { RadioGroup } from "@levin-the-doctor/simple-tailwind-ui"',
+  toggle:        'import { Toggle } from "@levin-the-doctor/simple-tailwind-ui"',
+  slider:        'import { Slider } from "@levin-the-doctor/simple-tailwind-ui"',
+  carousel:      'import { Carousel } from "@levin-the-doctor/simple-tailwind-ui"',
+  flipcard:      'import { FlipCard } from "@levin-the-doctor/simple-tailwind-ui"',
+  pictureframe:  'import { PictureFrame } from "@levin-the-doctor/simple-tailwind-ui"',
+  youtubeembed:  'import { YouTubeEmbed } from "@levin-the-doctor/simple-tailwind-ui"',
+  imagebutton:   'import { ImageButton } from "@levin-the-doctor/simple-tailwind-ui"',
+  burgermenu:    'import { BurgerMenu } from "@levin-the-doctor/simple-tailwind-ui"',
+  searchbar:     'import { SearchBar } from "@levin-the-doctor/simple-tailwind-ui"',
+  codepreview:   'import { CodePreview } from "@levin-the-doctor/simple-tailwind-ui"',
+  fileembed:     'import { FileEmbed } from "@levin-the-doctor/simple-tailwind-ui"',
 };
 
 // ── NavigationBar demo helpers ────────────────────────────────────────────────
@@ -819,6 +1040,80 @@ function TabsVertDemo({ lang }: { lang: Lang }) {
   );
 }
 
+// ── New component demos ───────────────────────────────────────────────────────
+
+const DEMO_IMAGES = [
+  "https://picsum.photos/id/1015/800/450",
+  "https://picsum.photos/id/1016/800/450",
+  "https://picsum.photos/id/1018/800/450",
+];
+
+const TOPPING_OPTIONS = [
+  { value: "cheese",   label: "Käse" },
+  { value: "salami",   label: "Salami" },
+  { value: "mushroom", label: "Pilze" },
+  { value: "olives",   label: "Oliven", disabled: true },
+];
+
+const SIZE_OPTIONS = [
+  { value: "s", label: "Klein" },
+  { value: "m", label: "Mittel" },
+  { value: "l", label: "Groß" },
+];
+
+const BURGER_ITEMS = [
+  { id: "home",     label: "Home",          icon: Home },
+  { id: "settings", label: "Einstellungen", icon: Settings },
+  { id: "profile",  label: "Profil",        icon: User },
+  { id: "logout",   label: "Abmelden",      icon: LogOut },
+];
+
+const CITY_SUGGESTIONS = ["Berlin", "Bremen", "Bonn", "Bochum", "Hamburg", "Hannover", "München", "Münster"];
+
+function SearchBarDemo({ lang }: { lang: Lang }) {
+  const [result, setResult] = useState("");
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      <SearchBar
+        placeholder={lang === "de" ? "Stadt suchen…" : "Search city…"}
+        suggestions={CITY_SUGGESTIONS}
+        onSearch={setResult}
+        size="full"
+      />
+      <p className="text-xs text-zinc-400 dark:text-zinc-500">
+        {result === ""
+          ? (lang === "de" ? "Enter drücken oder Vorschlag wählen." : "Press Enter or pick a suggestion.")
+          : (lang === "de" ? `Gesucht: ${result}` : `Searched: ${result}`)}
+      </p>
+    </div>
+  );
+}
+
+function SliderControlledDemo() {
+  const [volume, setVolume] = useState(40);
+  return (
+    <Slider
+      title={`Lautstärke — ${volume}%`}
+      value={volume}
+      onChange={setVolume}
+      formatValue={v => `${v}%`}
+      size="full"
+    />
+  );
+}
+
+const CODE_PREVIEW_SAMPLE = `import { Button } from "@levin-the-doctor/simple-tailwind-ui";
+
+export function App() {
+  // Anzahl der Klicks zählen
+  const [count, setCount] = useState(0);
+  return (
+    <Button color="primary" onClick={() => setCount(count + 1)}>
+      Geklickt: {count}
+    </Button>
+  );
+}`;
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export function Doku() {
@@ -983,26 +1278,32 @@ export function Doku() {
                 <p className="text-xs text-indigo-500/80 dark:text-indigo-400/60 leading-relaxed">{s.intro}</p>
               </div>
 
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 px-1">
-                {s.nav}
-              </p>
-              <nav className="flex flex-col gap-0.5">
-                {NAV_KEYS.map(key => {
-                  const isActive = active === key;
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => scrollTo(key)}
-                      className={`text-left px-3 py-1.5 rounded-lg text-sm transition-all duration-150 cursor-pointer ${
-                        isActive
-                          ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-semibold border-l-2 border-indigo-500 dark:border-indigo-400 pl-2.5"
-                          : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
-                      }`}
-                    >
-                      {s.sections[key].title}
-                    </button>
-                  );
-                })}
+              <nav className="flex flex-col gap-4">
+                {NAV_GROUPS.map(group => (
+                  <div key={group.id}>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-1.5 px-1">
+                      {s.groups[group.id]}
+                    </p>
+                    <div className="flex flex-col gap-0.5">
+                      {group.keys.map(key => {
+                        const isActive = active === key;
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => scrollTo(key)}
+                            className={`text-left px-3 py-1.5 rounded-lg text-sm transition-all duration-150 cursor-pointer ${
+                              isActive
+                                ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-semibold border-l-2 border-indigo-500 dark:border-indigo-400 pl-2.5"
+                                : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+                            }`}
+                          >
+                            {s.sections[key].title}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </nav>
             </div>
           </aside>
@@ -1017,19 +1318,19 @@ export function Doku() {
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
                     {lang === "de" ? "1. Paket installieren" : "1. Install the package"}
                   </p>
-                  <CodeBlock code="npm install @levin-the-doctor/simple-tailwind-ui" />
+                  <CodeBlock code="npm install @levin-the-doctor/simple-tailwind-ui" language="bash" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
                     {lang === "de" ? "2. Peer-Dependencies" : "2. Peer dependencies"}
                   </p>
-                  <CodeBlock code="npm install react react-dom lucide-react tailwindcss react-markdown" />
+                  <CodeBlock code="npm install react react-dom lucide-react tailwindcss react-markdown" language="bash" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
                     {lang === "de" ? "3. Tailwind CSS einbinden (CSS-Datei)" : "3. Import Tailwind CSS (in your CSS file)"}
                   </p>
-                  <CodeBlock code={`@import "tailwindcss";`} />
+                  <CodeBlock code={`@import "tailwindcss";`} language="css" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
@@ -1857,7 +2158,7 @@ show("Dauerhaft", { duration: 0 });   // bleibt bis manuell geschlossen`}
                 label={ex.changelogStd}
                 preview={
                   <div className="flex items-center gap-3">
-                    <Changelog program="SimpleTailwindUI" version="v1.1.0" date="02.06.2026" path="/CHANGELOG.md" />
+                    <Changelog program="SimpleTailwindUI" version="v1.6.0" date="10.06.2026" path="/CHANGELOG.md" />
                     <span className="text-sm text-zinc-500 dark:text-zinc-400">
                       {lang === "de" ? "← Info-Button klicken" : "← Click info button"}
                     </span>
@@ -1873,6 +2174,497 @@ show("Dauerhaft", { duration: 0 });   // bleibt bis manuell geschlossen`}
 />`}
               />
               {pt(CHANGELOG_PROPS)}
+            </Section>
+
+            {/* MultipleChoice */}
+            <Section id="multiplechoice" title={s.sections.multiplechoice.title} description={s.sections.multiplechoice.desc} importStr={IMPORT_STRINGS.multiplechoice}>
+              <ExampleBlock
+                label={ex.std}
+                preview={<MultipleChoice title="Beläge" options={TOPPING_OPTIONS} defaultValue={["cheese"]} />}
+                code={`const options = [
+  { value: "cheese",   label: "Käse" },
+  { value: "salami",   label: "Salami" },
+  { value: "mushroom", label: "Pilze" },
+  { value: "olives",   label: "Oliven", disabled: true },
+];
+
+<MultipleChoice
+  title="Beläge"
+  options={options}
+  defaultValue={["cheese"]}
+  onChange={(values) => console.log(values)}
+/>`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Horizontal & eigene Farbe" : "Horizontal & custom color"}
+                preview={
+                  <MultipleChoice
+                    title="Farben"
+                    options={SIZE_OPTIONS}
+                    orientation="horizontal"
+                    accentColor="bg-emerald-600 border-emerald-600 dark:bg-emerald-500 dark:border-emerald-500"
+                  />
+                }
+                code={`<MultipleChoice
+  title="Farben"
+  options={options}
+  orientation="horizontal"
+  accentColor="bg-emerald-600 border-emerald-600
+               dark:bg-emerald-500 dark:border-emerald-500"
+/>`}
+              />
+              {pt(MULTIPLECHOICE_PROPS)}
+            </Section>
+
+            {/* RadioGroup */}
+            <Section id="radiogroup" title={s.sections.radiogroup.title} description={s.sections.radiogroup.desc} importStr={IMPORT_STRINGS.radiogroup}>
+              <ExampleBlock
+                label={ex.std}
+                preview={<RadioGroup title="Größe" options={SIZE_OPTIONS} defaultValue="m" />}
+                code={`const options = [
+  { value: "s", label: "Klein" },
+  { value: "m", label: "Mittel" },
+  { value: "l", label: "Groß" },
+];
+
+<RadioGroup
+  title="Größe"
+  options={options}
+  defaultValue="m"
+  onChange={(value) => console.log(value)}
+/>`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Horizontal & eigene Farbe" : "Horizontal & custom color"}
+                preview={
+                  <RadioGroup
+                    title="Versand"
+                    options={SIZE_OPTIONS}
+                    orientation="horizontal"
+                    defaultValue="s"
+                    accentColor="border-rose-600 dark:border-rose-500 bg-rose-600 dark:bg-rose-500"
+                  />
+                }
+                code={`<RadioGroup
+  title="Versand"
+  options={options}
+  orientation="horizontal"
+  accentColor="border-rose-600 dark:border-rose-500
+               bg-rose-600 dark:bg-rose-500"
+/>`}
+              />
+              {pt(RADIOGROUP_PROPS)}
+            </Section>
+
+            {/* Toggle */}
+            <Section id="toggle" title={s.sections.toggle.title} description={s.sections.toggle.desc} importStr={IMPORT_STRINGS.toggle}>
+              <ExampleBlock
+                label={ex.std}
+                preview={<>
+                  <Toggle label={lang === "de" ? "Benachrichtigungen" : "Notifications"} defaultChecked />
+                  <Toggle label="Dark Mode" labelPosition="left" />
+                </>}
+                code={`<Toggle label="Benachrichtigungen" defaultChecked onChange={(on) => console.log(on)} />
+<Toggle label="Dark Mode" labelPosition="left" />`}
+              />
+              <ExampleBlock
+                label={`${ex.sizes} & ${ex.colors}`}
+                preview={<>
+                  <Toggle size="sm" defaultChecked />
+                  <Toggle size="md" defaultChecked />
+                  <Toggle size="lg" defaultChecked />
+                  <Toggle size="md" defaultChecked onColor="bg-emerald-500" label="Emerald" />
+                  <Toggle size="md" defaultChecked onColor="bg-rose-500" label="Rose" />
+                </>}
+                code={`<Toggle size="sm" defaultChecked />
+<Toggle size="md" defaultChecked />
+<Toggle size="lg" defaultChecked />
+<Toggle defaultChecked onColor="bg-emerald-500" label="Emerald" />
+<Toggle defaultChecked onColor="bg-rose-500"    label="Rose" />`}
+              />
+              <ExampleBlock
+                label={ex.states}
+                preview={<>
+                  <Toggle label={lang === "de" ? "Deaktiviert (aus)" : "Disabled (off)"} disabled />
+                  <Toggle label={lang === "de" ? "Deaktiviert (an)" : "Disabled (on)"} disabled defaultChecked />
+                </>}
+                code={`<Toggle label="Deaktiviert (aus)" disabled />
+<Toggle label="Deaktiviert (an)"  disabled defaultChecked />`}
+              />
+              {pt(TOGGLE_PROPS)}
+            </Section>
+
+            {/* Slider */}
+            <Section id="slider" title={s.sections.slider.title} description={s.sections.slider.desc} importStr={IMPORT_STRINGS.slider}>
+              <ExampleBlock
+                label={ex.std}
+                preview={<Slider title="Helligkeit" defaultValue={60} size="full" />}
+                code={`<Slider title="Helligkeit" defaultValue={60} onChange={(v) => console.log(v)} />`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Kontrolliert mit formatValue" : "Controlled with formatValue"}
+                preview={<SliderControlledDemo />}
+                code={`const [volume, setVolume] = useState(40);
+
+<Slider
+  title={\`Lautstärke — \${volume}%\`}
+  value={volume}
+  onChange={setVolume}
+  formatValue={(v) => \`\${v}%\`}
+/>`}
+              />
+              <ExampleBlock
+                label={`${ex.colors} & min/max/step`}
+                preview={
+                  <div className="flex flex-col gap-3 w-full">
+                    <Slider title="Temperatur (16–30 °C)" min={16} max={30} step={0.5} defaultValue={21} formatValue={v => `${v} °C`} fillColor="bg-amber-500" size="full" />
+                    <Slider title="Fortschritt" defaultValue={80} fillColor="bg-emerald-500" size="full" />
+                  </div>
+                }
+                code={`<Slider min={16} max={30} step={0.5} defaultValue={21}
+        formatValue={(v) => \`\${v} °C\`} fillColor="bg-amber-500" />
+<Slider defaultValue={80} fillColor="bg-emerald-500" />`}
+              />
+              <ExampleBlock
+                label={ex.states}
+                preview={<Slider title="Deaktiviert" defaultValue={30} disabled size="full" />}
+                code={`<Slider title="Deaktiviert" defaultValue={30} disabled />`}
+              />
+              {pt(SLIDER_PROPS)}
+            </Section>
+
+            {/* Carousel */}
+            <Section id="carousel" title={s.sections.carousel.title} description={s.sections.carousel.desc} importStr={IMPORT_STRINGS.carousel}>
+              <ExampleBlock
+                label={lang === "de" ? "Bilder-Slideshow" : "Image slideshow"}
+                preview={<Carousel images={DEMO_IMAGES} size="full" />}
+                code={`<Carousel
+  images={[
+    "/bilder/strand.jpg",
+    "/bilder/berge.jpg",
+    "/bilder/stadt.jpg",
+  ]}
+/>`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Beliebiger Inhalt & Autoplay" : "Arbitrary content & autoplay"}
+                preview={
+                  <Carousel autoPlay={4000} size="full">
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-lg font-semibold">Slide 1</div>
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-lg font-semibold">Slide 2</div>
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-500 to-orange-600 text-white text-lg font-semibold">Slide 3</div>
+                  </Carousel>
+                }
+                code={`<Carousel autoPlay={4000}>
+  <div className="...">Slide 1</div>
+  <div className="...">Slide 2</div>
+  <div className="...">Slide 3</div>
+</Carousel>`}
+              />
+              {pt(CAROUSEL_PROPS)}
+            </Section>
+
+            {/* FlipCard */}
+            <Section id="flipcard" title={s.sections.flipcard.title} description={s.sections.flipcard.desc} importStr={IMPORT_STRINGS.flipcard}>
+              <ExampleBlock
+                label={lang === "de" ? "Lernkarte (Klick zum Umdrehen)" : "Flash card (click to flip)"}
+                preview={
+                  <FlipCard
+                    front={
+                      <div className="text-center">
+                        <p className="text-xs uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-2">{lang === "de" ? "Frage" : "Question"}</p>
+                        <p className="text-lg font-semibold">{lang === "de" ? "Was ist die Hauptstadt von Frankreich?" : "What is the capital of France?"}</p>
+                      </div>
+                    }
+                    back={
+                      <div className="text-center">
+                        <p className="text-xs uppercase tracking-widest text-white/60 mb-2">{lang === "de" ? "Antwort" : "Answer"}</p>
+                        <p className="text-2xl font-bold">Paris</p>
+                      </div>
+                    }
+                  />
+                }
+                code={`<FlipCard
+  front={<p>Was ist die Hauptstadt von Frankreich?</p>}
+  back={<p>Paris</p>}
+/>`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Hover-Trigger & eigene Farben" : "Hover trigger & custom colors"}
+                preview={
+                  <FlipCard
+                    trigger="hover"
+                    direction="vertical"
+                    size="sm"
+                    front={<p className="font-semibold">Hover me!</p>}
+                    frontClassName="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    back={<p className="font-semibold">🎉 Überraschung</p>}
+                    backClassName="bg-gradient-to-br from-emerald-500 to-teal-600 text-white"
+                  />
+                }
+                code={`<FlipCard
+  trigger="hover"
+  direction="vertical"
+  front={<p>Hover me!</p>}
+  frontClassName="bg-zinc-100 dark:bg-zinc-800"
+  back={<p>🎉 Überraschung</p>}
+  backClassName="bg-gradient-to-br from-emerald-500 to-teal-600 text-white"
+/>`}
+              />
+              {pt(FLIPCARD_PROPS)}
+            </Section>
+
+            {/* PictureFrame */}
+            <Section id="pictureframe" title={s.sections.pictureframe.title} description={s.sections.pictureframe.desc} importStr={IMPORT_STRINGS.pictureframe}>
+              <ExampleBlock
+                label={`${ex.std} & Caption`}
+                preview={
+                  <PictureFrame
+                    src={DEMO_IMAGES[0]}
+                    alt="Landschaft"
+                    caption={lang === "de" ? "Berge am Morgen — gerahmt mit Schatten." : "Mountains in the morning — framed with shadow."}
+                  />
+                }
+                code={`<PictureFrame
+  src="/bilder/berge.jpg"
+  alt="Landschaft"
+  caption="Berge am Morgen — gerahmt mit Schatten."
+/>`}
+              />
+              <ExampleBlock
+                label={ex.variants}
+                preview={<>
+                  <PictureFrame src={DEMO_IMAGES[1]} alt="Subtle" variant="subtle" size="sm" caption="subtle" />
+                  <PictureFrame src={DEMO_IMAGES[2]} alt="Strong" variant="strong" size="sm" caption="strong" />
+                </>}
+                code={`<PictureFrame src="..." alt="..." variant="default" />
+<PictureFrame src="..." alt="..." variant="subtle" />
+<PictureFrame src="..." alt="..." variant="strong" />`}
+              />
+              {pt(PICTUREFRAME_PROPS)}
+            </Section>
+
+            {/* YouTubeEmbed */}
+            <Section id="youtubeembed" title={s.sections.youtubeembed.title} description={s.sections.youtubeembed.desc} importStr={IMPORT_STRINGS.youtubeembed}>
+              <ExampleBlock
+                label={lang === "de" ? "Per Link" : "Via link"}
+                preview={<YouTubeEmbed source="https://www.youtube.com/watch?v=aqz-KE-bpKQ" title="Big Buck Bunny" size="full" />}
+                code={`// Alle Formate funktionieren:
+<YouTubeEmbed source="https://www.youtube.com/watch?v=aqz-KE-bpKQ" />
+<YouTubeEmbed source="https://youtu.be/aqz-KE-bpKQ" />
+<YouTubeEmbed source="aqz-KE-bpKQ" />  // rohe Video-ID
+
+// Oder kompletter Embed-Code:
+<YouTubeEmbed source='<iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" ...></iframe>' />`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Mit Startzeitpunkt" : "With start time"}
+                preview={<YouTubeEmbed source="aqz-KE-bpKQ" start={90} size="md" />}
+                code={`<YouTubeEmbed source="aqz-KE-bpKQ" start={90} size="md" />`}
+              />
+              {pt(YOUTUBEEMBED_PROPS)}
+            </Section>
+
+            {/* ImageButton */}
+            <Section id="imagebutton" title={s.sections.imagebutton.title} description={s.sections.imagebutton.desc} importStr={IMPORT_STRINGS.imagebutton}>
+              <ExampleBlock
+                label={ex.std}
+                preview={<>
+                  <ImageButton src={DEMO_IMAGES[0]} alt="Berge" label={lang === "de" ? "Berge entdecken" : "Explore mountains"} icon={ExternalLink} onClick={() => {}} />
+                  <ImageButton src={DEMO_IMAGES[1]} alt="See" label={lang === "de" ? "Zum See" : "To the lake"} onClick={() => {}} />
+                </>}
+                code={`<ImageButton
+  src="/bilder/berge.jpg"
+  alt="Berge"
+  label="Berge entdecken"
+  icon={ExternalLink}
+  onClick={() => navigate("/berge")}
+/>`}
+              />
+              <ExampleBlock
+                label={`${ex.sizes} & ${ex.states}`}
+                preview={<>
+                  <ImageButton src={DEMO_IMAGES[2]} alt="sm" label="sm" size="sm" onClick={() => {}} />
+                  <ImageButton src={DEMO_IMAGES[2]} alt="md" label="md" size="md" onClick={() => {}} />
+                  <ImageButton src={DEMO_IMAGES[2]} alt="disabled" label="disabled" size="sm" disabled />
+                </>}
+                code={`<ImageButton src="..." alt="..." label="sm" size="sm" />
+<ImageButton src="..." alt="..." label="md" size="md" />
+<ImageButton src="..." alt="..." label="disabled" disabled />`}
+              />
+              {pt(IMAGEBUTTON_PROPS)}
+            </Section>
+
+            {/* BurgerMenu */}
+            <Section id="burgermenu" title={s.sections.burgermenu.title} description={s.sections.burgermenu.desc} importStr={IMPORT_STRINGS.burgermenu}>
+              <ExampleBlock
+                label={ex.std}
+                preview={
+                  <div className="flex items-center gap-3">
+                    <BurgerMenu items={BURGER_ITEMS} activeId="home" />
+                    <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                      {lang === "de" ? "← Klicken zum Öffnen" : "← Click to open"}
+                    </span>
+                  </div>
+                }
+                code={`const items = [
+  { id: "home",     label: "Home",          icon: Home },
+  { id: "settings", label: "Einstellungen", icon: Settings },
+  { id: "profile",  label: "Profil",        icon: User },
+  { id: "logout",   label: "Abmelden",      icon: LogOut },
+];
+
+<BurgerMenu items={items} activeId="home" onSelect={(id) => console.log(id)} />`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Mit Header, rechtsbündig & eigener Farbe" : "With header, right-aligned & custom color"}
+                preview={
+                  <div className="w-full flex justify-end">
+                    <BurgerMenu
+                      items={BURGER_ITEMS}
+                      activeId="settings"
+                      align="right"
+                      accentColor="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300"
+                      header={
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Max Mustermann</span>
+                          <span className="text-xs text-zinc-400 dark:text-zinc-500">max@example.com</span>
+                        </div>
+                      }
+                    />
+                  </div>
+                }
+                code={`<BurgerMenu
+  items={items}
+  align="right"
+  accentColor="bg-emerald-50 dark:bg-emerald-950/40
+               text-emerald-700 dark:text-emerald-300"
+  header={
+    <div>
+      <span>Max Mustermann</span>
+      <span>max@example.com</span>
+    </div>
+  }
+/>`}
+              />
+              {pt(BURGERMENU_PROPS)}
+            </Section>
+
+            {/* SearchBar */}
+            <Section id="searchbar" title={s.sections.searchbar.title} description={s.sections.searchbar.desc} importStr={IMPORT_STRINGS.searchbar}>
+              <ExampleBlock
+                label={lang === "de" ? "Mit Vorschlägen" : "With suggestions"}
+                preview={<SearchBarDemo lang={lang} />}
+                code={`const cities = ["Berlin", "Bremen", "Bonn", "Hamburg", "München"];
+
+<SearchBar
+  placeholder="Stadt suchen…"
+  suggestions={cities}
+  onSearch={(query) => console.log(query)}
+/>`}
+              />
+              <ExampleBlock
+                label={`${ex.variants} & ${ex.states}`}
+                preview={
+                  <div className="flex flex-col gap-3 w-full">
+                    <SearchBar placeholder="default" variant="default" size="full" />
+                    <SearchBar placeholder="subtle" variant="subtle" size="full" />
+                    <SearchBar placeholder="strong" variant="strong" size="full" />
+                    <SearchBar placeholder={lang === "de" ? "Lädt…" : "Loading…"} loading size="full" />
+                    <SearchBar placeholder={lang === "de" ? "Deaktiviert" : "Disabled"} disabled size="full" />
+                  </div>
+                }
+                code={`<SearchBar variant="default" />
+<SearchBar variant="subtle" />
+<SearchBar variant="strong" />
+<SearchBar loading />
+<SearchBar disabled />`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Eigene Akzentfarbe (Fokus-Ring)" : "Custom accent color (focus ring)"}
+                preview={
+                  <SearchBar
+                    placeholder={lang === "de" ? "Fokussieren für Emerald-Ring…" : "Focus for emerald ring…"}
+                    accentRing="focus-within:ring-emerald-500/40 focus-within:border-emerald-400 dark:focus-within:border-emerald-500"
+                    size="full"
+                  />
+                }
+                code={`<SearchBar
+  accentRing="focus-within:ring-emerald-500/40
+              focus-within:border-emerald-400
+              dark:focus-within:border-emerald-500"
+/>`}
+              />
+              {pt(SEARCHBAR_PROPS)}
+            </Section>
+
+            {/* CodePreview */}
+            <Section id="codepreview" title={s.sections.codepreview.title} description={s.sections.codepreview.desc} importStr={IMPORT_STRINGS.codepreview}>
+              <ExampleBlock
+                label={lang === "de" ? "Mit Titelzeile & Zeilennummern" : "With title bar & line numbers"}
+                preview={
+                  <div className="w-full">
+                    <CodePreview code={CODE_PREVIEW_SAMPLE} language="tsx" title="App.tsx" showLineNumbers />
+                  </div>
+                }
+                code={`<CodePreview
+  code={myCode}
+  language="tsx"
+  title="App.tsx"
+  showLineNumbers
+/>`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Andere Sprachen" : "Other languages"}
+                preview={
+                  <div className="flex flex-col gap-3 w-full">
+                    <CodePreview code={`# Projekt bauen und veröffentlichen\nnpm run build\nnpm publish --access public`} language="bash" title="deploy.sh" />
+                    <CodePreview code={`{\n  "name": "@levin-the-doctor/simple-tailwind-ui",\n  "version": "1.6.0",\n  "sideEffects": false\n}`} language="json" title="package.json" />
+                  </div>
+                }
+                code={`<CodePreview code={script} language="bash" title="deploy.sh" />
+<CodePreview code={pkg}    language="json" title="package.json" />`}
+              />
+              {pt(CODEPREVIEW_PROPS)}
+            </Section>
+
+            {/* FileEmbed */}
+            <Section id="fileembed" title={s.sections.fileembed.title} description={s.sections.fileembed.desc} importStr={IMPORT_STRINGS.fileembed}>
+              <ExampleBlock
+                label={lang === "de" ? "Markdown-Datei per Pfad" : "Markdown file by path"}
+                preview={
+                  <FileEmbed
+                    path="/CHANGELOG.md"
+                    title="CHANGELOG.md"
+                    maxHeight="260px"
+                    size="full"
+                  />
+                }
+                code={`// Lädt die Datei per Fetch und rendert sie passend zur Endung:
+// .md → Markdown · .ts/.tsx/.css/… → CodePreview · Bilder → <img> · Rest → Text
+
+<FileEmbed path="/CHANGELOG.md" title="CHANGELOG.md" maxHeight="260px" />`}
+              />
+              <ExampleBlock
+                label={lang === "de" ? "Typ erzwingen" : "Force a type"}
+                preview={
+                  <FileEmbed
+                    path="/CHANGELOG.md"
+                    type="code"
+                    language="text"
+                    title="CHANGELOG.md (als Rohtext)"
+                    maxHeight="200px"
+                    size="full"
+                  />
+                }
+                code={`<FileEmbed
+  path="/CHANGELOG.md"
+  type="code"        // auto | markdown | code | text | image
+  language="text"
+  maxHeight="200px"
+/>`}
+              />
+              {pt(FILEEMBED_PROPS)}
             </Section>
 
           </main>
